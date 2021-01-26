@@ -1,0 +1,6 @@
+[submodule "services/course-service"]
+	path = services/course-service
+	url = https://github.com/twin-te/course-service.git
+[submodule "openapi-spec"]
+	path = openapi-spec
+	url = https://github.com/twin-te/twinte-openapi-spec.git
