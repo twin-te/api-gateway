@@ -1,5 +1,5 @@
 import { ApiEndpointHandler, PartialServerImplementation } from '../typeMapper'
-import { paths } from '../../generated/openapi/schema'
+import { paths } from '../../../generated/openapi/schema'
 import { v4 } from 'uuid'
 
 type CourseHandler = PartialServerImplementation<

@@ -1,5 +1,5 @@
 import { Express } from 'express'
-import { logger } from './logger'
+import { api as logger } from '../logger'
 
 const HttpMethod = [
   'get',

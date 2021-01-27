@@ -8,4 +8,4 @@ log4js.configure({
 })
 
 export const logger = log4js.getLogger()
-export const expressLogger = log4js.getLogger('express')
+export const api = log4js.getLogger('api')
