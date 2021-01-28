@@ -4,6 +4,10 @@ import path from 'path'
 import { middleware } from 'express-openapi-validator'
 import { api as logger } from '../logger'
 import { applyRouter } from './routes'
+import swaggerUI from 'swagger-ui-express'
+import YAML from 'yamljs'
+
+const apiSpecPath = path.resolve(__dirname, '../../openapi-spec/spec.yml')
 
 export function startServer() {
   return new Promise<void>((resolve, reject) => {
@@ -14,6 +18,12 @@ export function startServer() {
     app.use(express.text())
     app.use(express.urlencoded({ extended: true }))
 
+    app.use(
+      '/api-docs',
+      swaggerUI.serve,
+      swaggerUI.setup(YAML.load(apiSpecPath))
+    )
+
     app.use((req, res, next) => {
       if (logger.isTraceEnabled())
         logger.trace(req.method, req.originalUrl, req.body)
@@ -23,7 +33,7 @@ export function startServer() {
 
     app.use(
       middleware({
-        apiSpec: path.resolve(__dirname, '../../openapi-spec/spec.yml'),
+        apiSpec: apiSpecPath,
         validateRequests: true,
         validateResponses: false,
       })
