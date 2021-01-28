@@ -106,9 +106,9 @@ export function mapToExpress<T extends OpenApiDefinition>(
       logger.debug(`${method.toUpperCase()} ${path}`)
       app[method](
         path.replace(/{(.*?)}/g, (_, p) => `:${p}`),
-        (req, res) => {
+        async (req, res) => {
           // @ts-ignore
-          const result = impl[path][method]({
+          const result = await impl[path][method]({
             body: req.body,
             query: req.query,
             header: req.headers,
