@@ -1,46 +1,18 @@
 import { Course } from '../type/course'
-import {
-  Course as grpcCourse,
-  GetCoursesByCodeRequest,
-  GetCoursesByCodeRequestCondition,
-} from '../../generated/services/course-service/protos/CourseService_pb'
 
 import { courseServiceClient } from '../grpc'
+import { ICourse } from '../../generated/services/course'
+
+type All<T> = {
+  [P in keyof T]-?: All<NonNullable<T[P]>>
+}
 
 export const courseService = {
   getCoursesByCode: (conditions: { year: number; code: string }[]) =>
-    new Promise<Course[]>((resolve, reject) => {
-      const req = new GetCoursesByCodeRequest()
-      req.setConditionsList(
-        conditions.map((c) => {
-          const cc = new GetCoursesByCodeRequestCondition()
-          cc.setYear(c.year)
-          cc.setCode(c.code)
-          return cc
-        })
-      )
-      courseServiceClient.getCoursesByCode(req, (err, res) => {
-        if (err || !res) {
-          reject(err)
-          return
-        }
-        resolve(res.getCoursesList().map(convertCourse))
+    new Promise<All<ICourse>[]>((resolve, reject) => {
+      courseServiceClient.getCoursesByCode({ conditions }, (err, res) => {
+        if (err || !res) reject(err)
+        else resolve(res.courses as All<ICourse>[])
       })
     }),
-}
-
-function convertCourse(c: grpcCourse): Course {
-  const {
-    hasparseerror,
-    recomendedgradesList,
-    methodsList,
-    schedulesList,
-    ...obj
-  } = c.toObject()
-  return {
-    ...obj,
-    recommendedGrades: recomendedgradesList,
-    method: methodsList,
-    schedules: schedulesList,
-  }
 }

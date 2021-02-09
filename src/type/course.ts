@@ -15,7 +15,7 @@ export enum Module {
   SummerVacation,
   SpringVacation,
   Annual,
-  Unknown,
+  UnknownModule,
 }
 
 export enum Day {
@@ -49,6 +49,6 @@ export type Course = {
   overview: string
   remarks: string
   recommendedGrades: number[]
-  method: CourseMethod[]
+  methods: CourseMethod[]
   schedules: CourseSchedule[]
 }

@@ -57,7 +57,7 @@ export default handlers
 
 function toResponseCourse({
   schedules,
-  method,
+  methods: method,
   ...obj
 }: Course): components['schemas']['Course'] {
   return {
@@ -125,7 +125,7 @@ function toResponseModule(d: Module): components['schemas']['CourseModule'] {
       return 'SummerVacation'
     case Module.SpringVacation:
       return 'SpringVacation'
-    case Module.Unknown:
+    case Module.UnknownModule:
       return 'Unknown'
   }
 }

@@ -1,16 +1,28 @@
 #!/usr/bin/env bash
 
-rm -rf ./generated/protos
+mkdir -p ./generated/services
+mkdir -p ./generated/services/course
+mkdir -p ./generated/services/timetable
 
-# Path to this plugin
-PROTOC_GEN_TS_PATH="./node_modules/.bin/protoc-gen-ts"
 
-# Directory to write generated code to (.js and .d.ts files)
-OUT_DIR="./generated"
+### course
+yarn pbjs \
+    --target static-module \
+    --out generated/services/course/index.js \
+    ./services/course-service/protos/CourseService.proto
 
-yarn grpc_tools_node_protoc \
-    --plugin="protoc-gen-ts=${PROTOC_GEN_TS_PATH}" \
-    --js_out="import_style=commonjs,binary:${OUT_DIR}" \
-    --grpc_out="grpc_js:${OUT_DIR}" \
-    --ts_out="service=grpc-node,mode=grpc-js:${OUT_DIR}" \
-    services/course-service/protos/CourseService.proto
+yarn pbts \
+    --out ./generated/services/course/index.d.ts \
+    ./generated/services/course/index.js
+
+### timetable
+yarn pbjs \
+    --target static-module \
+    --out generated/services/timetable/index.js \
+    ./services/timetable-service/protos/Nullable.proto \
+    ./services/timetable-service/protos/Message.proto \
+    ./services/timetable-service/protos/TimetableService.proto
+
+yarn pbts \
+    --out ./generated/services/timetable/index.d.ts \
+    ./generated/services/timetable/index.js

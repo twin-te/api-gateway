@@ -39,18 +39,16 @@ services:
     command: /bin/sh -c "while sleep 1000; do :; done"
   course:
     build: ../services/course-service
-    image: twinte-cource-service-dev-image
+    image: twinte-cource-service-dev-image-for-apigateway
     depends_on:
       - postgres
   timetable:
     build: ../services/timetable-service
-    image: twinte-timetable-service-dev-image
+    image: twinte-timetable-service-dev-image-for-apigateway
     depends_on:
       - postgres
   postgres:
     image: postgres:13.1
-    ports:
-      - 5432:5432
     environment:
       POSTGRES_PASSWORD: postgres
     volumes:
