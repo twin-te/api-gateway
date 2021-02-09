@@ -4,3 +4,6 @@
 [submodule "openapi-spec"]
 	path = openapi-spec
 	url = https://github.com/twin-te/twinte-openapi-spec.git
+[submodule "services/timetable-service"]
+	path = services/timetable-service
+	url = https://github.com/twin-te/timetable-service.git

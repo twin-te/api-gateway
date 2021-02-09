@@ -1,1 +1,2 @@
 create database twinte_course_service;
+create database twinte_timetable_service;

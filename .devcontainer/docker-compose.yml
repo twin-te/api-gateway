@@ -42,6 +42,11 @@ services:
     image: twinte-cource-service-dev-image
     depends_on:
       - postgres
+  timetable:
+    build: ../services/timetable-service
+    image: twinte-timetable-service-dev-image
+    depends_on:
+      - postgres
   postgres:
     image: postgres:13.1
     ports:
