@@ -21,12 +21,14 @@ type AllowPromise<T> = T | Promise<T>
 type ApiEndpointParam<
   DEF extends OpenApiDefinition,
   PATH extends keyof DEF,
-  METHOD extends keyof DEF[PATH]
+  METHOD extends keyof DEF[PATH],
+  BODY_TYPE extends string = 'application/json'
 > = DEF[PATH][METHOD] extends {
-  parameters: infer PARAMS
+  parameters?: infer PARAMS
+  requestBody?: { content: { [K in BODY_TYPE]: infer BODY } }
 }
-  ? PARAMS
-  : {}
+  ? PARAMS & { body: BODY; userId: string }
+  : { userId: string }
 
 type ApiEndpointResponse<
   DEF extends OpenApiDefinition,
@@ -106,26 +108,31 @@ export function mapToExpress<T extends OpenApiDefinition>(
       logger.debug(`${method.toUpperCase()} ${path}`)
       app[method](
         path.replace(/{(.*?)}/g, (_, p) => `:${p}`),
-        async (req, res) => {
-          // @ts-ignore
-          const result = await impl[path][method]({
-            body: req.body,
-            query: req.query,
-            header: req.headers,
-            path: req.params,
-            cookie: req.cookies,
-          })
-          // @ts-ignore
-          if (result.header)
+        async (req, res, next) => {
+          try {
             // @ts-ignore
-            Object.keys(result.header).forEach((k) =>
+            const result = await impl[path][method]({
+              body: req.body,
+              query: req.query,
+              header: req.headers,
+              path: req.params,
+              cookie: req.cookies,
+              userId: req.userId,
+            })
+            // @ts-ignore
+            if (result.header)
               // @ts-ignore
-              res.append(k, result.header[k])
-            )
-          // @ts-ignore
-          res.status(result.code)
-          // @ts-ignore
-          res.json(result.body)
+              Object.keys(result.header).forEach((k) =>
+                // @ts-ignore
+                res.append(k, result.header[k])
+              )
+            // @ts-ignore
+            res.status(result.code)
+            // @ts-ignore
+            res.json(result.body)
+          } catch (e) {
+            next(e)
+          }
         }
       )
     })

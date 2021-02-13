@@ -6,10 +6,11 @@ import { api as logger } from '../logger'
 import { applyRouter } from './routes'
 import swaggerUI from 'swagger-ui-express'
 import YAML from 'yamljs'
+import { checkSession } from '../usecase/checkSession'
 
 const apiSpecPath = path.resolve(__dirname, '../../openapi-spec/spec.yml')
 
-export function startServer() {
+export function startApiServer() {
   return new Promise<void>((resolve, reject) => {
     const app = express()
 
@@ -38,6 +39,14 @@ export function startServer() {
         validateResponses: false,
       })
     )
+
+    app.use(async (req, res, next) => {
+      req.userId = await checkSession(req.cookies['connect.sid'])
+      if (!req.userId) {
+        res.status(401)
+        res.send({ message: 'Unauthorized', errors: [] })
+      } else next()
+    })
 
     applyRouter(app)
 
