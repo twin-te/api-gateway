@@ -1,9 +1,9 @@
 import { logger } from './logger'
-import { startServer } from './api'
+import { startApiServer } from './api'
 
 async function main() {
   logger.info('service is starting.')
-  await startServer()
+  await startApiServer()
   logger.info('ready.')
 }
 
