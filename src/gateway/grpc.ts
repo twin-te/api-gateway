@@ -1,10 +1,9 @@
 import * as grpc from '@grpc/grpc-js'
 import * as protobuf from 'protobufjs'
 import * as protoLoader from '@grpc/proto-loader'
-import { CourseService } from '../generated/services/course'
-import { TimetableService } from '../generated/services/timetable'
+import { CourseService } from '../../generated/services/course'
+import { TimetableService } from '../../generated/services/timetable'
 import { ServiceClientConstructor } from '@grpc/grpc-js/build/src/make-client'
-import path from 'path'
 
 export type DeepRequired<T> = {
   [K in keyof T]-?: NonNullable<DeepRequired<T[K]>>
@@ -64,7 +63,7 @@ function createClient<T extends typeof protobuf.rpc.Service>(
   service: T,
   address: string
 ): GrpcClient<InstanceType<T>> {
-  const def = protoLoader.loadSync(protos)
+  const def = protoLoader.loadSync(protos, { defaults: true })
   const Client = grpc.loadPackageDefinition(def)[
     service.name
   ] as ServiceClientConstructor
