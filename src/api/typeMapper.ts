@@ -50,6 +50,10 @@ type ApiEndpointResponse<
               body: DEF[PATH][METHOD]['responses'][K]['content'][RESPONSE_TYPE]
               header: HEADERS
             }
+          : DEF[PATH][METHOD]['responses'][K] extends never
+          ? {
+              code: K
+            }
           : {
               code: K
               body: DEF[PATH][METHOD]['responses'][K]['content'][RESPONSE_TYPE]

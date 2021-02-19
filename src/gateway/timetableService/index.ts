@@ -17,9 +17,13 @@ type RegisteredCourse = {
   methods: CourseMethod[] | null
   schedules: CourseSchedule[] | null
   tags: { id: string }[]
+  memo: string
+  attendance: number
+  absence: number
+  late: number
 }
 
-type CreateRegisteredCoursesProps = {
+type createRegisteredCoursesProps = {
   userId: string
   courseId?: string
   year: number
@@ -31,8 +35,25 @@ type CreateRegisteredCoursesProps = {
   tags: { id: string }[]
 }
 
+type updateRegisteredCoursesProps = {
+  id: string
+  userId: string
+  courseId?: string
+  year: number
+  name?: string
+  instructor?: string
+  credit?: number
+  methods?: CourseMethod[]
+  schedules?: CourseSchedule[]
+  tags: { id: string }[]
+  memo: string
+  attendance: number
+  absence: number
+  late: number
+}
+
 export const timetableService = {
-  createRegisteredCourses: (prop: CreateRegisteredCoursesProps[]) =>
+  createRegisteredCourses: (prop: createRegisteredCoursesProps[]) =>
     new Promise<RegisteredCourse[]>((resolve, reject) => {
       timetableServiceClient.createRegisteredCourses(
         {
@@ -73,5 +94,38 @@ export const timetableService = {
             )
         }
       )
+    }),
+  updateRegisteredCourses: (prop: updateRegisteredCoursesProps[]) =>
+    new Promise<RegisteredCourse[]>((resolve, reject) => {
+      timetableServiceClient.updateRegisteredCourses(
+        {
+          courses: prop.map((c) =>
+            wrapNullableObject(c, [
+              'name',
+              'courseId',
+              'instructor',
+              'credit',
+              'methods',
+              'schedules',
+            ])
+          ),
+        },
+        (err, res) => {
+          if (err || !res) reject(err)
+          else
+            resolve(
+              (res.courses as All<IRegisteredCourse>[]).map(
+                unwrapNullableObject
+              )
+            )
+        }
+      )
+    }),
+  deleteRegisteredCourses: (ids: string[]) =>
+    new Promise<void>((resolve, reject) => {
+      timetableServiceClient.deleteRegisteredCourses({ ids }, (err, res) => {
+        if (err || !res) reject(err)
+        else resolve()
+      })
     }),
 }

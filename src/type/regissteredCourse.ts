@@ -11,4 +11,8 @@ export type RegisteredCourse = {
   methods: CourseMethod[] | null
   schedules: CourseSchedule[] | null
   tags: { id: string }[]
+  memo: string
+  attendance: number
+  absence: number
+  late: number
 }

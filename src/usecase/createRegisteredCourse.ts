@@ -25,13 +25,18 @@ export async function createRegisteredCourse(
 export async function createCustomRegisteredCourse(
   userId: string,
   courses: {
-    userId: string
-    year: number | null
-    name: string | null
-    instructor: string | null
-    credit: number | null
-    methods: CourseMethod[] | null
-    schedules: CourseSchedule[] | null
-    tags: string[]
-  }
-) {}
+    year: number
+    name: string
+    instructor: string
+    credit: number
+    methods: CourseMethod[]
+    schedules: CourseSchedule[]
+    tags: { id: string }[]
+  }[]
+): Promise<RegisteredCourse[]> {
+  return (
+    await timetableService.createRegisteredCourses(
+      courses.map((c) => ({ userId, ...c }))
+    )
+  ).map((c) => ({ course: null, ...c }))
+}
