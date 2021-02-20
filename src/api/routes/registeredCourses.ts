@@ -16,11 +16,11 @@ import { getRegisteredCourses } from '../../usecase/getRegisteredCourse'
 import { updateRegisteredCourse } from '../../usecase/updateRegisteredCourse'
 import { deleteRegisteredCourse } from '../../usecase/deleteRegisteredCourse'
 
-type TimetableHandler = PartialServerImplementation<
+type RegisteredCourseHandler = PartialServerImplementation<
   paths,
-  '/registered-courses' | '/registered-courses/{id}' // | '/tags' | '/tags/{id}'
+  '/registered-courses' | '/registered-courses/{id}'
 >
-const handler: TimetableHandler = {
+const handler: RegisteredCourseHandler = {
   '/registered-courses': {
     post: async ({ body, userId }) => {
       if ('code' in body)
@@ -86,12 +86,9 @@ const handler: TimetableHandler = {
       }
     },
     delete: async (req) => {
-      let n!: never
-      await deleteRegisteredCourse([req.path.id])
+      await deleteRegisteredCourse(req.userId, [req.path.id])
       return {
         code: 204,
-        body: n,
-        header: {},
       }
     },
   },
@@ -115,7 +112,7 @@ function toResponseRegisteredCourse(prop: {
   absence: number
   late: number
 }): components['schemas']['RegisteredCourse'] {
-  const { methods, schedules, course: baseCourse, userId, ...c } = prop
+  const { methods, schedules, course: baseCourse, ...c } = prop
 
   return {
     course: baseCourse
@@ -127,7 +124,6 @@ function toResponseRegisteredCourse(prop: {
       : undefined,
     methods: methods?.map(toResponseMethod),
     schedules: schedules?.map(toResponseSchedule),
-    userID: userId,
     ...nullToUndefined(c),
   }
 }

@@ -4,7 +4,9 @@ import { CourseMethod, CourseSchedule } from '../../type/course'
 import { unwrapNullableObject, wrapNullableObject } from './nullable'
 import { All } from '../../type/utils'
 
-type Tag = { is: string; userId: string; name: string }
+type Tag = { id: string; userId: string; name: string }
+
+type CreateTagInput = { userId: string; name: string }
 
 type RegisteredCourse = {
   id: string
@@ -121,10 +123,41 @@ export const timetableService = {
         }
       )
     }),
-  deleteRegisteredCourses: (ids: string[]) =>
+  deleteRegisteredCourses: (userId: string, ids: string[]) =>
     new Promise<void>((resolve, reject) => {
-      timetableServiceClient.deleteRegisteredCourses({ ids }, (err, res) => {
+      timetableServiceClient.deleteRegisteredCourses(
+        { userId, ids },
+        (err, res) => {
+          if (err || !res) reject(err)
+          else resolve()
+        }
+      )
+    }),
+  createTags: (tags: CreateTagInput[]) =>
+    new Promise<Tag[]>((resolve, reject) => {
+      timetableServiceClient.createTags({ tags }, (err, res) => {
         if (err || !res) reject(err)
+        else resolve(res.tags as Tag[])
+      })
+    }),
+  getTags: (userId: string) =>
+    new Promise<Tag[]>((resolve, reject) => {
+      timetableServiceClient.getTags({ userId }, (err, res) => {
+        if (err || !res) reject(err)
+        else resolve(res.tags as Tag[])
+      })
+    }),
+  updateTags: (tags: Tag[]) =>
+    new Promise<Tag[]>((resolve, reject) => {
+      timetableServiceClient.updateTags({ tags }, (err, res) => {
+        if (err || !res) reject(err)
+        else resolve(res.tags as Tag[])
+      })
+    }),
+  deleteTags: (userId: string, ids: string[]) =>
+    new Promise<void>((resolve, reject) => {
+      timetableServiceClient.deleteTags({ userId, ids }, (err, res) => {
+        if (err || !res) reject(res)
         else resolve()
       })
     }),

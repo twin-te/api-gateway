@@ -1,5 +1,5 @@
 import { timetableService } from '../gateway/timetableService'
 
-export function deleteRegisteredCourse(ids: string[]) {
-  return timetableService.deleteRegisteredCourses(ids)
+export function deleteRegisteredCourse(userId: string, ids: string[]) {
+  return timetableService.deleteRegisteredCourses(userId, ids)
 }
