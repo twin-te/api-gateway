@@ -42,17 +42,17 @@ type ApiEndpointResponse<
 }
   ? AllowPromise<
       {
-        [K in keyof DEF[PATH][METHOD]['responses']]: DEF[PATH][METHOD]['responses'][K] extends {
-          headers: infer HEADERS
-        }
+        [K in keyof DEF[PATH][METHOD]['responses']]: DEF[PATH][METHOD]['responses'][K] extends never
+          ? {
+              code: K
+            }
+          : DEF[PATH][METHOD]['responses'][K] extends {
+              headers: infer HEADERS
+            }
           ? {
               code: K
               body: DEF[PATH][METHOD]['responses'][K]['content'][RESPONSE_TYPE]
               header: HEADERS
-            }
-          : DEF[PATH][METHOD]['responses'][K] extends never
-          ? {
-              code: K
             }
           : {
               code: K
