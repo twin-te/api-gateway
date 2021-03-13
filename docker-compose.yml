@@ -1,0 +1,28 @@
+version: '3'
+services:
+  api:
+    build: .
+    image: apigateway
+    ports:
+      - 3000:3000
+  course:
+    build: ./services/course-service
+    image: twinte-cource-service-dev-image-for-apigateway
+    depends_on:
+      - postgres
+  timetable:
+    build: ./services/timetable-service
+    image: twinte-timetable-service-dev-image-for-apigateway
+    depends_on:
+      - postgres
+  school-calendar:
+    build: ./services/school-calendar-service
+    image: twinte-school-calendar-service-dev-image-for-apigateway
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:13.1
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./.devcontainer/initdb/init.sql:/docker-entrypoint-initdb.d/init.sql
