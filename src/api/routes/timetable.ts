@@ -10,7 +10,7 @@ import {
   toResponseRegisteredCourse,
   toResponseModule,
 } from '../converter'
-import { toResponseEvent } from './schoolCalendar'
+import { toResponseEvent, toResponseModuleTerm } from './schoolCalendar'
 
 type TimetableHandler = PartialServerImplementation<paths, '/timetable/{date}'>
 
@@ -33,7 +33,7 @@ const handler: TimetableHandler = {
         code: 200,
         body: {
           courses: res.courses.map(toResponseRegisteredCourse),
-          module: MODULE[res.module],
+          module: toResponseModuleTerm(res.module),
           events: res.events.map(toResponseEvent),
         },
       }

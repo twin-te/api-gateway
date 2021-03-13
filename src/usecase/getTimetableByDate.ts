@@ -23,7 +23,7 @@ export async function getTimetableByDate(userId: string, date: Dayjs) {
           s.day === day
       )
     }),
-    module: module.module,
+    module,
     events,
   }
 }

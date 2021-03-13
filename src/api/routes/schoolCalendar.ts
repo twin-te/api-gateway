@@ -65,7 +65,7 @@ const MODULE = [
   'SpringVacation',
 ] as const
 
-function toResponseModuleTerm(
+export function toResponseModuleTerm(
   m: All<IModuleTerm>
 ): components['schemas']['SchoolCalendarModule'] {
   return {
