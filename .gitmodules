@@ -7,3 +7,6 @@
 [submodule "services/timetable-service"]
 	path = services/timetable-service
 	url = https://github.com/twin-te/timetable-service.git
+[submodule "services/school-calendar-service"]
+	path = services/school-calendar-service
+	url = https://github.com/twin-te/school-calendar-service.git
