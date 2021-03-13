@@ -43,7 +43,7 @@ const EVENT_TYPE = [
   'SubstituteDay',
 ] as const
 
-function toResponseEvent(
+export function toResponseEvent(
   e: All<IEvent>
 ): components['schemas']['SchoolCalendarEvent'] {
   return {
@@ -58,10 +58,10 @@ const MODULE = [
   'SpringA',
   'SpringB',
   'SpringC',
-  'SummerVacation',
   'FallA',
   'FallB',
   'FallC',
+  'SummerVacation',
   'SpringVacation',
 ] as const
 

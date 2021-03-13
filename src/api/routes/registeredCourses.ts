@@ -9,6 +9,7 @@ import {
   toInternalSchedule,
   toResponseMethod,
   toResponseSchedule,
+  toResponseRegisteredCourse,
 } from '../converter'
 import { Course, CourseMethod, CourseSchedule } from '../../type/course'
 import { nullToUndefined } from '../../type/utils'
@@ -95,35 +96,3 @@ const handler: RegisteredCourseHandler = {
 }
 
 export default handler
-
-function toResponseRegisteredCourse(prop: {
-  id: string
-  userId: string
-  course: Course | null
-  year: number
-  name: string | null
-  instructor: string | null
-  credit: number | null
-  methods: CourseMethod[] | null
-  schedules: CourseSchedule[] | null
-  tags: { id: string }[]
-  memo: string
-  attendance: number
-  absence: number
-  late: number
-}): components['schemas']['RegisteredCourse'] {
-  const { methods, schedules, course: baseCourse, ...c } = prop
-
-  return {
-    course: baseCourse
-      ? {
-          ...nullToUndefined(baseCourse),
-          methods: baseCourse?.methods.map(toResponseMethod),
-          schedules: baseCourse?.schedules.map(toResponseSchedule),
-        }
-      : undefined,
-    methods: methods?.map(toResponseMethod),
-    schedules: schedules?.map(toResponseSchedule),
-    ...nullToUndefined(c),
-  }
-}

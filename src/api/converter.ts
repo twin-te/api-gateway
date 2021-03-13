@@ -1,5 +1,12 @@
 import { components } from '../../generated/openapi/schema'
-import { CourseMethod, CourseSchedule, Day, Module } from '../type/course'
+import {
+  Course,
+  CourseMethod,
+  CourseSchedule,
+  Day,
+  Module,
+} from '../type/course'
+import { nullToUndefined } from '../type/utils'
 
 const DAYS = [
   'Sun',
@@ -41,11 +48,13 @@ export function toResponseSchedule(
   }
 }
 
-function toResponseDay(d: Day): components['schemas']['Day'] {
+export function toResponseDay(d: Day): components['schemas']['Day'] {
   return DAYS[d]
 }
 
-function toResponseModule(d: Module): components['schemas']['CourseModule'] {
+export function toResponseModule(
+  d: Module
+): components['schemas']['CourseModule'] {
   return MODULE[d]
 }
 
@@ -53,6 +62,38 @@ export function toResponseMethod(
   d: CourseMethod
 ): components['schemas']['CourseMethod'] {
   return METHOD[d]
+}
+
+export function toResponseRegisteredCourse(prop: {
+  id: string
+  userId: string
+  course: Course | null
+  year: number
+  name: string | null
+  instructor: string | null
+  credit: number | null
+  methods: CourseMethod[] | null
+  schedules: CourseSchedule[] | null
+  tags: { id: string }[]
+  memo: string
+  attendance: number
+  absence: number
+  late: number
+}): components['schemas']['RegisteredCourse'] {
+  const { methods, schedules, course: baseCourse, ...c } = prop
+
+  return {
+    course: baseCourse
+      ? {
+          ...nullToUndefined(baseCourse),
+          methods: baseCourse?.methods.map(toResponseMethod),
+          schedules: baseCourse?.schedules.map(toResponseSchedule),
+        }
+      : undefined,
+    methods: methods?.map(toResponseMethod),
+    schedules: schedules?.map(toResponseSchedule),
+    ...nullToUndefined(c),
+  }
 }
 
 export function toInternalSchedule(
