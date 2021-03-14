@@ -37,10 +37,11 @@ export default handler
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const
 
 const EVENT_TYPE = [
-  'PublicHoliday',
   'Holiday',
+  'PublicHoliday',
   'Exam',
   'SubstituteDay',
+  'Other',
 ] as const
 
 export function toResponseEvent(
