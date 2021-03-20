@@ -1,9 +1,9 @@
 import { PartialServerImplementation } from '../typeMapper'
 import { paths, components } from '../../../generated/openapi/schema'
-import { v4 } from 'uuid'
 import { getCoursesByCodeUseCase } from '../../usecase/getCourseByCode'
 import { Course } from '../../type/course'
 import { toResponseMethod, toResponseSchedule } from '../converter'
+import { searchCourseUseCase, SearchMode } from '../../usecase/searchCourse'
 
 type CourseHandler = PartialServerImplementation<
   paths,
@@ -35,26 +35,19 @@ const handlers: CourseHandler = {
     },
   },
   '/courses/search': {
-    post: (req) => ({
-      code: 200,
-      body: [
-        {
-          id: v4(),
-          name: 'test',
-          code: 'CODE',
-          year: 2020,
-          instructor: 'inst',
-          credit: 1.5,
-          overview: 'overview',
-          remarks: 'remarks',
-          recommendedGrades: [1, 2],
-          methods: ['Asynchronous'],
-          schedules: [
-            { module: 'SpringA', day: 'Mon', period: 1, room: 'room' },
-          ],
-        },
-      ],
-    }),
+    post: async ({ body }) => {
+      const res = await searchCourseUseCase({
+        year: body.year,
+        keywords: body.keywords,
+        searchMode:
+          body.searchMode === 'Contain' ? SearchMode.Contain : SearchMode.Cover,
+        timetable: body.timetable ? convertModules(body.timetable) : undefined,
+      })
+      return {
+        code: 200,
+        body: res.map(toResponseCourse),
+      }
+    },
   },
 }
 
@@ -70,4 +63,54 @@ function toResponseCourse({
     methods: method.map(toResponseMethod),
     schedules: schedules.map(toResponseSchedule),
   }
+}
+
+function convertModules(
+  modules: components['schemas']['SearchCourseTimetableQuery']
+) {
+  const res: {
+    [day in keyof components['schemas']['SearchCourseTimetableQuery']]: {
+      [day in keyof components['schemas']['SearchCourseTimetableQueryDays']]: boolean[]
+    }
+  } = {}
+  Object.keys(modules).forEach((k) => {
+    res[
+      k as keyof components['schemas']['SearchCourseTimetableQuery']
+    ] = convertDays(
+      modules[k as keyof components['schemas']['SearchCourseTimetableQuery']]!
+    )
+  })
+  return res
+}
+
+function convertDays(
+  days: components['schemas']['SearchCourseTimetableQueryDays']
+) {
+  const res: {
+    [day in keyof components['schemas']['SearchCourseTimetableQueryDays']]: boolean[]
+  } = {}
+  Object.keys(days).forEach((k) => {
+    res[
+      k as keyof components['schemas']['SearchCourseTimetableQueryDays']
+    ] = convertPeriods(
+      days[k as keyof components['schemas']['SearchCourseTimetableQueryDays']]!
+    )
+  })
+  return res
+}
+
+function convertPeriods(
+  periods: components['schemas']['SearchCourseTimetableQueryPeriods']
+): boolean[] {
+  return [
+    periods[0] ?? false,
+    periods[1] ?? false,
+    periods[2] ?? false,
+    periods[3] ?? false,
+    periods[4] ?? false,
+    periods[5] ?? false,
+    periods[6] ?? false,
+    periods[7] ?? false,
+    periods[8] ?? false,
+  ]
 }
