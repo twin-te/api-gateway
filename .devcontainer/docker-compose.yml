@@ -54,6 +54,13 @@ services:
     image: twinte-school-calendar-service-dev-image-for-apigateway
     depends_on:
       - postgres
+  donation:
+    build: ../services/donation-service
+    image: twinte-donation-service-dev-image-for-apigateway
+    env_file:
+      - .donation.env
+    depends_on:
+      - postgres
   postgres:
     image: postgres:13.1
     environment:

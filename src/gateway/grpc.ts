@@ -5,6 +5,7 @@ import { CourseService } from '../../generated/services/course'
 import { TimetableService } from '../../generated/services/timetable'
 import { ServiceClientConstructor } from '@grpc/grpc-js/build/src/make-client'
 import { SchoolCalendarService } from '../../generated/services/schoolCalendar'
+import { DonationService } from '../../generated/services/donation'
 
 export type DeepRequired<T> = {
   [K in keyof T]-?: NonNullable<DeepRequired<T[K]>>
@@ -92,4 +93,10 @@ export const schoolCalendarServiceClient = createClient(
   ['services/school-calendar-service/protos/SchoolCalendarService.proto'],
   SchoolCalendarService,
   'school-calendar:50051'
+)
+
+export const donationServiceClient = createClient(
+  ['services/donation-service/protos/DonationService.proto'],
+  DonationService,
+  'donation:50051'
 )

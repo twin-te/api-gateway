@@ -10,3 +10,6 @@
 [submodule "services/school-calendar-service"]
 	path = services/school-calendar-service
 	url = https://github.com/twin-te/school-calendar-service.git
+[submodule "services/donation-service"]
+	path = services/donation-service
+	url = https://github.com/twin-te/donation-service.git
