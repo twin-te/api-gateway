@@ -6,6 +6,7 @@ import { TimetableService } from '../../generated/services/timetable'
 import { ServiceClientConstructor } from '@grpc/grpc-js/build/src/make-client'
 import { SchoolCalendarService } from '../../generated/services/schoolCalendar'
 import { DonationService } from '../../generated/services/donation'
+import { All } from '../type/utils'
 
 export type DeepRequired<T> = {
   [K in keyof T]-?: NonNullable<DeepRequired<T[K]>>
@@ -35,32 +36,26 @@ export type GrpcClient<T extends protobuf.rpc.Service> = grpc.Client &
     ) => void
   }
 
-// function createClient<T extends typeof protobuf.rpc.Service>(
-//   service: T,
-//   address: string
-// ): InstanceType<T> {
-//   const Client = grpc.makeGenericClientConstructor({}, service.name, {})
-//   const client = new Client(address, grpc.credentials.createInsecure())
-//   const rpcImpl: protobuf.RPCImpl = function (method, requestData, callback) {
-//     client.makeUnaryRequest(
-//       method.name,
-//       // @ts-ignore
-//       (arg) => arg,
-//       (arg) => arg,
-//       requestData,
-//       callback
-//     )
-//   }
-//   return new service(rpcImpl) as InstanceType<T>
-// }
+type GrpcClientCallMethod = (
+  req: any,
+  callback: grpc.requestCallback<any>
+) => void
 
-// export const courseServiceClient = createClient(CourseService, 'course:50051')
-// export const timetableServiceClient = createClient(
-//   TimetableService,
-//   'timetable:50051'
-// )
+type ResponseTypeFromMethod<
+  T extends GrpcClientCallMethod
+> = Parameters<T> extends [any, grpc.requestCallback<infer Res>] ? Res : never
 
-function createClient<T extends typeof protobuf.rpc.Service>(
+type RequestTypeFromMethod<
+  T extends GrpcClientCallMethod
+> = Parameters<T> extends [infer Req, grpc.requestCallback<any>] ? Req : never
+
+type WrappedGrpcClient<T extends GrpcClient<protobuf.rpc.Service>> = {
+  [K in FilteredKeys<T, GrpcClientCallMethod>]: (
+    req: RequestTypeFromMethod<T[K]>
+  ) => Promise<All<ResponseTypeFromMethod<T[K]>>>
+}
+
+export function createClient<T extends typeof protobuf.rpc.Service>(
   protos: string[],
   service: T,
   address: string
@@ -69,10 +64,44 @@ function createClient<T extends typeof protobuf.rpc.Service>(
   const Client = grpc.loadPackageDefinition(def)[
     service.name
   ] as ServiceClientConstructor
-  return (new Client(
+  const client = (new Client(
     address,
     grpc.ChannelCredentials.createInsecure()
   ) as unknown) as GrpcClient<InstanceType<T>>
+
+  return client
+}
+
+function wrapGrpcRequestMethod<Method extends GrpcClientCallMethod>(
+  method: Method
+): (
+  req: RequestTypeFromMethod<Method>
+) => Promise<All<ResponseTypeFromMethod<Method>>> {
+  return (req: RequestTypeFromMethod<Method>) =>
+    new Promise<All<ResponseTypeFromMethod<Method>>>((resolve, reject) => {
+      method(req, (err, res) => {
+        if (err || !res) reject(err)
+        else resolve(res)
+      })
+    })
+}
+
+export function wrapGrpcClient<Client extends GrpcClient<protobuf.rpc.Service>>(
+  client: Client
+): WrappedGrpcClient<Client> {
+  const wrapped: { [key: string]: any } = {}
+  // @ts-ignore
+  Object.keys(client.__proto__).forEach((k) => {
+    // @ts-ignore
+    const fn = client[k]
+    if (typeof fn === 'function') {
+      wrapped[k] = wrapGrpcRequestMethod(
+        fn.bind(client) as GrpcClientCallMethod
+      )
+    }
+  })
+  // @ts-ignore
+  return wrapped
 }
 
 export const courseServiceClient = createClient(
@@ -93,10 +122,4 @@ export const schoolCalendarServiceClient = createClient(
   ['services/school-calendar-service/protos/SchoolCalendarService.proto'],
   SchoolCalendarService,
   'school-calendar:50051'
-)
-
-export const donationServiceClient = createClient(
-  ['services/donation-service/protos/DonationService.proto'],
-  DonationService,
-  'donation:50051'
 )
