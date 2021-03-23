@@ -41,7 +41,7 @@ export function startApiServer() {
         maxAge: 1000 * 60 * 60 * 24 * 7,
       })
       res.send(
-        `<p>Logged in as sample user</p>
+        `<p>Logged in as test user</p>
         <p><a href="./api-docs/">api-docs</a></p>
         <p><a href="./logout">logout</a></p>
         `
