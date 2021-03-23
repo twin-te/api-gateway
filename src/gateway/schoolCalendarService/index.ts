@@ -1,23 +1,49 @@
 import { Dayjs } from 'dayjs'
-import { IEvent, IModuleTerm } from '../../../generated/services/schoolCalendar'
+import {
+  Day,
+  EventType,
+  IModuleTerm,
+} from '../../../generated/services/schoolCalendar'
 import { All } from '../../type/utils'
 import { schoolCalendarServiceClient } from '../grpc'
 
+export type SchoolCalendarEvent = {
+  id: number
+  date: string
+  type: EventType
+  description: string
+  changeTo?: Day
+}
+
 export const schoolCalendarService = {
   getEvents: (year: number) =>
-    new Promise<All<IEvent>[]>((resolve, reject) => {
+    new Promise<SchoolCalendarEvent[]>((resolve, reject) => {
       schoolCalendarServiceClient.getEvents({ year }, (err, res) => {
         if (err || !res) reject(err)
-        else resolve(res.events as All<IEvent>[])
+        else
+          resolve(
+            res.events.map(({ changeTo, ...e }) => ({
+              ...e,
+              changeTo:
+                e.type === EventType.SubstituteDay ? changeTo : undefined,
+            })) as SchoolCalendarEvent[]
+          )
       })
     }),
   getEventsByDate: (date: Dayjs) =>
-    new Promise<All<IEvent>[]>((resolve, reject) => {
+    new Promise<SchoolCalendarEvent[]>((resolve, reject) => {
       schoolCalendarServiceClient.getEventsByDate(
         { date: date.toISOString() },
         (err, res) => {
           if (err || !res) reject(err)
-          else resolve(res.events as All<IEvent>[])
+          else
+            resolve(
+              res.events.map(({ changeTo, ...e }) => ({
+                ...e,
+                changeTo:
+                  e.type === EventType.SubstituteDay ? changeTo : undefined,
+              })) as SchoolCalendarEvent[]
+            )
         }
       )
     }),

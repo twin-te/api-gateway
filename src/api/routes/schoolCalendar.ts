@@ -1,6 +1,7 @@
 import { get } from 'http'
 import { components, paths } from '../../../generated/openapi/schema'
 import { IEvent, IModuleTerm } from '../../../generated/services/schoolCalendar'
+import { SchoolCalendarEvent } from '../../gateway/schoolCalendarService'
 import { All } from '../../type/utils'
 import { getEventsUseCase } from '../../usecase/getEvents'
 import { getModuleTermsUseCase } from '../../usecase/getModuleTerms'
@@ -45,13 +46,13 @@ const EVENT_TYPE = [
 ] as const
 
 export function toResponseEvent(
-  e: All<IEvent>
+  e: SchoolCalendarEvent
 ): components['schemas']['SchoolCalendarEvent'] {
   return {
     date: e.date,
     description: e.description,
     eventType: EVENT_TYPE[e.type],
-    changeTo: DAYS[e.changeTo],
+    changeTo: e.changeTo ? DAYS[e.changeTo] : undefined,
   }
 }
 

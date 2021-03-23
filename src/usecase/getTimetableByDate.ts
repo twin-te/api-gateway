@@ -4,7 +4,10 @@ import {
   IEvent,
   IModuleTerm,
 } from '../../generated/services/schoolCalendar'
-import { schoolCalendarService } from '../gateway/schoolCalendarService'
+import {
+  SchoolCalendarEvent,
+  schoolCalendarService,
+} from '../gateway/schoolCalendarService'
 import { CourseSchedule, Day, Module } from '../type/course'
 import { RegisteredCourse } from '../type/regissteredCourse'
 import { All } from '../type/utils'
@@ -13,7 +16,7 @@ import { getRegisteredCourses } from './getRegisteredCourse'
 type Result = {
   courses: RegisteredCourse[]
   module?: All<IModuleTerm>
-  events: All<IEvent>[]
+  events: SchoolCalendarEvent[]
 }
 
 export async function getTimetableByDate(
