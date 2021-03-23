@@ -41,12 +41,18 @@ export function startApiServer() {
         maxAge: 1000 * 60 * 60 * 24 * 7,
       })
       res.send(
-        '<p>Logged in as sample user</p><a href="./api-docs">to api-docs</a>'
+        `<p>Logged in as sample user</p>
+        <p><a href="./api-docs/">api-docs</a></p>
+        <p><a href="./logout">logout</a></p>
+        `
       )
     })
     app.get('/logout', (req, res) => {
       res.clearCookie('connect.sid')
-      res.send('<p>Logged out</p><a href="./api-docs">to api-docs</a>')
+      res.send(`<p>Logged out</p>
+      <p><a href="./api-docs/">api-docs</a></p>
+      <p><a href="./login">login</a></p>
+      `)
     })
 
     app.use(
