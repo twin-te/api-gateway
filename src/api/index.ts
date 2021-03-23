@@ -32,6 +32,23 @@ export function startApiServer() {
       next()
     })
 
+    /**
+     * ログインを試すためのエンドポイント
+     */
+    app.get('/login', (req, res) => {
+      res.cookie('connect.sid', 'test value', {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+      })
+      res.send(
+        '<p>Logged in as sample user</p><a href="./api-docs">to api-docs</a>'
+      )
+    })
+    app.get('/logout', (req, res) => {
+      res.clearCookie('connect.sid')
+      res.send('<p>Logged out</p><a href="./api-docs">to api-docs</a>')
+    })
+
     app.use(
       middleware({
         apiSpec: apiSpecPath,
