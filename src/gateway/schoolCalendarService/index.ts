@@ -3,9 +3,10 @@ import {
   Day,
   EventType,
   IModuleTerm,
+  SchoolCalendarService,
 } from '../../../generated/services/schoolCalendar'
 import { All } from '../../type/utils'
-import { schoolCalendarServiceClient } from '../grpc'
+import { createClient } from '../grpc'
 
 export type SchoolCalendarEvent = {
   id: number
@@ -14,6 +15,12 @@ export type SchoolCalendarEvent = {
   description: string
   changeTo?: Day
 }
+
+const schoolCalendarServiceClient = createClient(
+  ['services/school-calendar-service/protos/SchoolCalendarService.proto'],
+  SchoolCalendarService,
+  'school-calendar:50051'
+)
 
 export const schoolCalendarService = {
   getEvents: (year: number) =>

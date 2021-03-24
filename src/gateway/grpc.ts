@@ -103,23 +103,3 @@ export function wrapGrpcClient<Client extends GrpcClient<protobuf.rpc.Service>>(
   // @ts-ignore
   return wrapped
 }
-
-export const courseServiceClient = createClient(
-  ['services/course-service/protos/CourseService.proto'],
-  CourseService,
-  'course:50051'
-)
-
-export const timetableServiceClient = createClient(
-  ['Nullable.proto', 'Message.proto', 'TimetableService.proto'].map(
-    (p) => `services/timetable-service/protos/${p}`
-  ),
-  TimetableService,
-  'timetable:50051'
-)
-
-export const schoolCalendarServiceClient = createClient(
-  ['services/school-calendar-service/protos/SchoolCalendarService.proto'],
-  SchoolCalendarService,
-  'school-calendar:50051'
-)

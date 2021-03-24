@@ -1,8 +1,12 @@
-import { IRegisteredCourse } from '../../../generated/services/timetable'
-import { timetableServiceClient } from '../grpc'
+import {
+  IRegisteredCourse,
+  TimetableService,
+} from '../../../generated/services/timetable'
+
 import { CourseMethod, CourseSchedule } from '../../type/course'
 import { unwrapNullableObject, wrapNullableObject } from './nullable'
 import { All } from '../../type/utils'
+import { createClient } from '../grpc'
 
 type Tag = { id: string; userId: string; name: string }
 
@@ -53,6 +57,14 @@ type updateRegisteredCoursesProps = {
   absence: number
   late: number
 }
+
+const timetableServiceClient = createClient(
+  ['Nullable.proto', 'Message.proto', 'TimetableService.proto'].map(
+    (p) => `services/timetable-service/protos/${p}`
+  ),
+  TimetableService,
+  'timetable:50051'
+)
 
 export const timetableService = {
   createRegisteredCourses: (prop: createRegisteredCoursesProps[]) =>

@@ -1,10 +1,16 @@
 import { All } from '../../type/utils'
-
-import { courseServiceClient } from '../grpc'
 import {
+  CourseService,
   ICourse,
   ISearchCourseRequest,
 } from '../../../generated/services/course'
+import { createClient } from '../grpc'
+
+const courseServiceClient = createClient(
+  ['services/course-service/protos/CourseService.proto'],
+  CourseService,
+  'course:50051'
+)
 
 export const courseService = {
   getCoursesByCode: (conditions: { year: number; code: string }[]) =>
