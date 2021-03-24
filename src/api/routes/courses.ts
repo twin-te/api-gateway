@@ -10,10 +10,8 @@ import {
 
 type CourseHandler = PartialServerImplementation<
   paths,
-  '/courses/{year}/{code}'
-> &
-  PartialServerImplementation<paths, '/courses/search'>
-
+  '/courses/{year}/{code}' | '/courses/search' | '/courses/'
+>
 const handlers: CourseHandler = {
   '/courses/{year}/{code}': {
     get: async (req) => {
@@ -34,6 +32,18 @@ const handlers: CourseHandler = {
           code: 404,
           body: { message: 'not found', errors: [] },
         }
+      }
+    },
+  },
+  '/courses/': {
+    get: async ({ query }) => {
+      const courses = await getCoursesByCodeUseCase(
+        query.codes.split(',').map((code) => ({ code, year: query.year })),
+        true
+      )
+      return {
+        code: 200,
+        body: courses.map(toResponseCourse),
       }
     },
   },

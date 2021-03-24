@@ -2,6 +2,7 @@ import { courseService } from '../../../gateway/courseService'
 import { timetableService } from '../../../gateway/timetableService'
 import { CourseMethod, CourseSchedule } from '../../../type/course'
 import { RegisteredCourse } from '../../../type/regissteredCourse'
+import { getCoursesByCodeUseCase } from '../../course/getCourseByCode'
 
 /**
  * ベースがある講義を作成
@@ -12,7 +13,7 @@ export async function createRegisteredCourse(
   userId: string,
   courses: { year: number; code: string }[]
 ): Promise<RegisteredCourse[]> {
-  const baseCourses = await courseService.getCoursesByCode(courses)
+  const baseCourses = await getCoursesByCodeUseCase(courses)
   const res = await timetableService.createRegisteredCourses(
     baseCourses.map((b) => ({ userId, courseId: b.id, year: b.year, tags: [] }))
   )

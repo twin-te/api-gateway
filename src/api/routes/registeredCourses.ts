@@ -31,7 +31,13 @@ const handler: RegisteredCourseHandler = {
             (await createRegisteredCourse(userId, [body]))[0]
           ),
         }
-      else {
+      else if (Array.isArray(body)) {
+        const res = await createRegisteredCourse(userId, body)
+        return {
+          code: 200,
+          body: res.map(toResponseRegisteredCourse),
+        }
+      } else {
         const { methods, schedules, ...s } = body
         return {
           code: 200,

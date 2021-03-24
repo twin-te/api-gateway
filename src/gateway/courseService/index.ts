@@ -16,7 +16,6 @@ const methodWrapper = wrapGrpcRequestMethodFactory(courseServiceClient)
 
 export const courseService = {
   getCoursesByCode: methodWrapper(courseServiceClient.getCoursesByCode, {
-    to: (conditions: { year: number; code: string }[]) => ({ conditions }),
     from: (res) => res.courses,
   }),
   getCourses: methodWrapper(courseServiceClient.getCourses, {
