@@ -1,9 +1,9 @@
 import { PartialServerImplementation } from '../typeMapper'
 import { paths, components } from '../../../generated/openapi/schema'
-import { createTagsUseCase } from '../../usecase/createTags'
-import { getTagsUseCase } from '../../usecase/getTags'
-import { updateTagsUseCase } from '../../usecase/updateTags'
-import { deleteTagsUseCase } from '../../usecase/deleteTags'
+import { createTagsUseCase } from '../../usecase/timetable/tag/createTags'
+import { getTagsUseCase } from '../../usecase/timetable/tag/getTags'
+import { updateTagsUseCase } from '../../usecase/timetable/tag/updateTags'
+import { deleteTagsUseCase } from '../../usecase/timetable/tag/deleteTags'
 
 type RegisteredCourseHandler = PartialServerImplementation<
   paths,

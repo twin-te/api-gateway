@@ -1,7 +1,7 @@
-import { courseService } from '../gateway/courseService'
-import { timetableService } from '../gateway/timetableService'
-import { CourseMethod, CourseSchedule } from '../type/course'
-import { RegisteredCourse } from '../type/regissteredCourse'
+import { courseService } from '../../../gateway/courseService'
+import { timetableService } from '../../../gateway/timetableService'
+import { CourseMethod, CourseSchedule } from '../../../type/course'
+import { RegisteredCourse } from '../../../type/regissteredCourse'
 
 /**
  * ベースがある講義を作成

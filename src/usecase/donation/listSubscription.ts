@@ -1,4 +1,4 @@
-import { donationService } from '../gateway/donationService'
+import { donationService } from '../../gateway/donationService'
 
 export function listSubscriptionUseCase(userId: string) {
   return donationService.listSubscription({ userId })

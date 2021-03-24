@@ -3,15 +3,15 @@ import {
   EventType,
   IEvent,
   IModuleTerm,
-} from '../../generated/services/schoolCalendar'
+} from '../../../../generated/services/schoolCalendar'
 import {
   SchoolCalendarEvent,
   schoolCalendarService,
-} from '../gateway/schoolCalendarService'
-import { CourseSchedule, Day, Module } from '../type/course'
-import { RegisteredCourse } from '../type/regissteredCourse'
-import { All } from '../type/utils'
-import { getRegisteredCourses } from './getRegisteredCourse'
+} from '../../../gateway/schoolCalendarService'
+import { CourseSchedule, Day, Module } from '../../../type/course'
+import { RegisteredCourse } from '../../../type/regissteredCourse'
+import { All } from '../../../type/utils'
+import { getRegisteredCourses } from '../registeredCourse/getRegisteredCourse'
 
 type Result = {
   courses: RegisteredCourse[]

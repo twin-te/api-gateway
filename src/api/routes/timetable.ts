@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import { paths } from '../../../generated/openapi/schema'
-import { getTimetableByDate } from '../../usecase/getTimetableByDate'
+import { getTimetableByDate } from '../../usecase/timetable/widget/getTimetableByDate'
 import { PartialServerImplementation } from '../typeMapper'
 import {
   toInternalMethod,

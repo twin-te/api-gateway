@@ -1,5 +1,5 @@
-import { courseService } from '../gateway/courseService'
-import { Day, Module } from '../type/course'
+import { courseService } from '../../gateway/courseService'
+import { Day, Module } from '../../type/course'
 
 export enum SearchMode {
   Cover,

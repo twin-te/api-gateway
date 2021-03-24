@@ -6,7 +6,7 @@ import { api as logger } from '../logger'
 import { applyRouter } from './routes'
 import swaggerUI from 'swagger-ui-express'
 import YAML from 'yamljs'
-import { checkSession } from '../usecase/checkSession'
+import { checkSession } from '../usecase/session/checkSession'
 
 const apiSpecPath = path.resolve(__dirname, '../../openapi-spec/spec.yml')
 

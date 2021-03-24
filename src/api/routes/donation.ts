@@ -4,15 +4,15 @@ import {
   PaymentType,
   SubscriptionStatus,
 } from '../../../generated/services/donation'
-import { createOneTimeCheckoutSessionUseCase } from '../../usecase/createOneTimeCheckoutSession'
-import { createSubscriptionCheckoutSessionUseCase } from '../../usecase/createSubscriptionCheckoutSession'
-import { getPaymentUserUseCase } from '../../usecase/getPaymentUser'
-import { getTotalAmountUseCase } from '../../usecase/getTotalAmount'
-import { listContributorsUseCase } from '../../usecase/listContributors'
-import { listPaymentHistory } from '../../usecase/listPaymentHistory'
-import { listSubscriptionUseCase } from '../../usecase/listSubscription'
-import { unsubscribeUseCase } from '../../usecase/unsubscribe'
-import { updatePaymentUserUseCase } from '../../usecase/updatePaymentUser'
+import { createOneTimeCheckoutSessionUseCase } from '../../usecase/donation/createOneTimeCheckoutSession'
+import { createSubscriptionCheckoutSessionUseCase } from '../../usecase/donation/createSubscriptionCheckoutSession'
+import { getPaymentUserUseCase } from '../../usecase/donation/getPaymentUser'
+import { getTotalAmountUseCase } from '../../usecase/donation/getTotalAmount'
+import { listContributorsUseCase } from '../../usecase/donation/listContributors'
+import { listPaymentHistory } from '../../usecase/donation/listPaymentHistory'
+import { listSubscriptionUseCase } from '../../usecase/donation/listSubscription'
+import { unsubscribeUseCase } from '../../usecase/donation/unsubscribe'
+import { updatePaymentUserUseCase } from '../../usecase/donation/updatePaymentUser'
 import { PartialServerImplementation } from '../typeMapper'
 
 type DonationHandler = PartialServerImplementation<

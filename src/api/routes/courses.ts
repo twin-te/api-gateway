@@ -1,9 +1,12 @@
 import { PartialServerImplementation } from '../typeMapper'
 import { paths, components } from '../../../generated/openapi/schema'
-import { getCoursesByCodeUseCase } from '../../usecase/getCourseByCode'
+import { getCoursesByCodeUseCase } from '../../usecase/course/getCourseByCode'
 import { Course } from '../../type/course'
 import { toResponseMethod, toResponseSchedule } from '../converter'
-import { searchCourseUseCase, SearchMode } from '../../usecase/searchCourse'
+import {
+  searchCourseUseCase,
+  SearchMode,
+} from '../../usecase/course/searchCourse'
 
 type CourseHandler = PartialServerImplementation<
   paths,

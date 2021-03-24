@@ -1,6 +1,6 @@
-import { courseService } from '../gateway/courseService'
-import { timetableService } from '../gateway/timetableService'
-import { RegisteredCourse } from '../type/regissteredCourse'
+import { courseService } from '../../../gateway/courseService'
+import { timetableService } from '../../../gateway/timetableService'
+import { RegisteredCourse } from '../../../type/regissteredCourse'
 
 /**
  * 登録済みの講義を取得する

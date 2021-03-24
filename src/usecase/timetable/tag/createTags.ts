@@ -1,4 +1,4 @@
-import { timetableService } from '../gateway/timetableService'
+import { timetableService } from '../../../gateway/timetableService'
 
 type Input = {
   userId: string

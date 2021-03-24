@@ -3,7 +3,7 @@ import { paths, components } from '../../../generated/openapi/schema'
 import {
   createCustomRegisteredCourse,
   createRegisteredCourse,
-} from '../../usecase/createRegisteredCourse'
+} from '../../usecase/timetable/registeredCourse/createRegisteredCourse'
 import {
   toInternalMethod,
   toInternalSchedule,
@@ -13,9 +13,9 @@ import {
 } from '../converter'
 import { Course, CourseMethod, CourseSchedule } from '../../type/course'
 import { nullToUndefined } from '../../type/utils'
-import { getRegisteredCourses } from '../../usecase/getRegisteredCourse'
-import { updateRegisteredCourse } from '../../usecase/updateRegisteredCourse'
-import { deleteRegisteredCourse } from '../../usecase/deleteRegisteredCourse'
+import { getRegisteredCourses } from '../../usecase/timetable/registeredCourse/getRegisteredCourse'
+import { updateRegisteredCourse } from '../../usecase/timetable/registeredCourse/updateRegisteredCourse'
+import { deleteRegisteredCourse } from '../../usecase/timetable/registeredCourse/deleteRegisteredCourse'
 
 type RegisteredCourseHandler = PartialServerImplementation<
   paths,

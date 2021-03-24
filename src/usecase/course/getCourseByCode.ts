@@ -1,5 +1,5 @@
-import { courseService } from '../gateway/courseService'
-import { Course } from '../type/course'
+import { courseService } from '../../gateway/courseService'
+import { Course } from '../../type/course'
 
 type GetCoursesByCodeUseCaseProps = {
   year: number

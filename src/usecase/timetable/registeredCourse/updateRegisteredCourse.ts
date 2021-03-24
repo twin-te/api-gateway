@@ -1,7 +1,7 @@
-import { CourseMethod } from '../../generated/services/timetable'
-import { courseService } from '../gateway/courseService'
-import { timetableService } from '../gateway/timetableService'
-import { CourseSchedule } from '../type/course'
+import { CourseMethod } from '../../../../generated/services/timetable'
+import { courseService } from '../../../gateway/courseService'
+import { timetableService } from '../../../gateway/timetableService'
+import { CourseSchedule } from '../../../type/course'
 
 type Input = {
   id: string
