@@ -2,11 +2,9 @@ import { Dayjs } from 'dayjs'
 import {
   Day,
   EventType,
-  IModuleTerm,
   SchoolCalendarService,
 } from '../../../generated/services/schoolCalendar'
-import { All } from '../../type/utils'
-import { createClient } from '../grpc'
+import { createClient, wrapGrpcRequestMethodFactory } from '../grpc'
 
 export type SchoolCalendarEvent = {
   id: number
@@ -22,53 +20,29 @@ const schoolCalendarServiceClient = createClient(
   'school-calendar:50051'
 )
 
+const methodWrapper = wrapGrpcRequestMethodFactory(schoolCalendarServiceClient)
+
 export const schoolCalendarService = {
-  getEvents: (year: number) =>
-    new Promise<SchoolCalendarEvent[]>((resolve, reject) => {
-      schoolCalendarServiceClient.getEvents({ year }, (err, res) => {
-        if (err || !res) reject(err)
-        else
-          resolve(
-            res.events.map(({ changeTo, ...e }) => ({
-              ...e,
-              changeTo:
-                e.type === EventType.SubstituteDay ? changeTo : undefined,
-            })) as SchoolCalendarEvent[]
-          )
-      })
-    }),
-  getEventsByDate: (date: Dayjs) =>
-    new Promise<SchoolCalendarEvent[]>((resolve, reject) => {
-      schoolCalendarServiceClient.getEventsByDate(
-        { date: date.toISOString() },
-        (err, res) => {
-          if (err || !res) reject(err)
-          else
-            resolve(
-              res.events.map(({ changeTo, ...e }) => ({
-                ...e,
-                changeTo:
-                  e.type === EventType.SubstituteDay ? changeTo : undefined,
-              })) as SchoolCalendarEvent[]
-            )
-        }
-      )
-    }),
-  getModuleTerms: (year: number) =>
-    new Promise<All<IModuleTerm>[]>((resolve, reject) => {
-      schoolCalendarServiceClient.getModuleTerms({ year }, (err, res) => {
-        if (err || !res) reject(err)
-        else resolve(res.terms as All<IModuleTerm>[])
-      })
-    }),
-  getModuleTermByDate: (date: Dayjs) =>
-    new Promise<All<IModuleTerm>>((resolve, reject) => {
-      schoolCalendarServiceClient.getModuleTermByDate(
-        { date: date.toISOString() },
-        (err, res) => {
-          if (err || !res) reject(err)
-          else resolve(res as All<IModuleTerm>)
-        }
-      )
-    }),
+  getEvents: methodWrapper(schoolCalendarServiceClient.getEvents, {
+    from: (res) =>
+      res.events.map(({ changeTo, ...e }) => ({
+        ...e,
+        changeTo: e.type === EventType.SubstituteDay ? changeTo : undefined,
+      })),
+  }),
+  getEventsByDate: methodWrapper(schoolCalendarServiceClient.getEventsByDate, {
+    to: (req: Dayjs) => ({ date: req.toISOString() }),
+    from: (res) =>
+      res.events.map(({ changeTo, ...e }) => ({
+        ...e,
+        changeTo: e.type === EventType.SubstituteDay ? changeTo : undefined,
+      })),
+  }),
+  getModuleTerms: methodWrapper(schoolCalendarServiceClient.getModuleTerms, {
+    from: (res) => res.terms,
+  }),
+  getModuleTermByDate: methodWrapper(
+    schoolCalendarServiceClient.getModuleTermByDate,
+    { to: (req: Dayjs) => ({ date: req.toISOString() }) }
+  ),
 }

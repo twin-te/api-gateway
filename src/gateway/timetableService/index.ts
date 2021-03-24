@@ -6,7 +6,7 @@ import {
 import { CourseMethod, CourseSchedule } from '../../type/course'
 import { unwrapNullableObject, wrapNullableObject } from './nullable'
 import { All } from '../../type/utils'
-import { createClient } from '../grpc'
+import { createClient, wrapGrpcRequestMethodFactory } from '../grpc'
 
 type Tag = { id: string; userId: string; name: string }
 
@@ -66,111 +66,65 @@ const timetableServiceClient = createClient(
   'timetable:50051'
 )
 
+const methodWrapper = wrapGrpcRequestMethodFactory(timetableServiceClient)
+
 export const timetableService = {
-  createRegisteredCourses: (prop: createRegisteredCoursesProps[]) =>
-    new Promise<RegisteredCourse[]>((resolve, reject) => {
-      timetableServiceClient.createRegisteredCourses(
-        {
-          courses: prop.map((c) =>
-            wrapNullableObject(c, [
-              'name',
-              'courseId',
-              'instructor',
-              'credit',
-              'methods',
-              'schedules',
-            ])
-          ),
-        },
-        (err, res) => {
-          if (err || !res?.courses) reject(err)
-          else {
-            resolve(
-              (res.courses as All<IRegisteredCourse>[]).map(
-                unwrapNullableObject
-              )
-            )
-          }
-        }
-      )
-    }),
-  getRegisteredCourses: (userId: string, year: number) =>
-    new Promise<RegisteredCourse[]>((resolve, reject) => {
-      timetableServiceClient.getRegisteredCourses(
-        { userId, year },
-        (err, res) => {
-          if (err || !res) reject(err)
-          else
-            resolve(
-              (res.courses as All<IRegisteredCourse>[]).map(
-                unwrapNullableObject
-              )
-            )
-        }
-      )
-    }),
-  updateRegisteredCourses: (prop: updateRegisteredCoursesProps[]) =>
-    new Promise<RegisteredCourse[]>((resolve, reject) => {
-      timetableServiceClient.updateRegisteredCourses(
-        {
-          courses: prop.map((c) =>
-            wrapNullableObject(c, [
-              'name',
-              'courseId',
-              'instructor',
-              'credit',
-              'methods',
-              'schedules',
-            ])
-          ),
-        },
-        (err, res) => {
-          if (err || !res) reject(err)
-          else
-            resolve(
-              (res.courses as All<IRegisteredCourse>[]).map(
-                unwrapNullableObject
-              )
-            )
-        }
-      )
-    }),
-  deleteRegisteredCourses: (userId: string, ids: string[]) =>
-    new Promise<void>((resolve, reject) => {
-      timetableServiceClient.deleteRegisteredCourses(
-        { userId, ids },
-        (err, res) => {
-          if (err || !res) reject(err)
-          else resolve()
-        }
-      )
-    }),
-  createTags: (tags: CreateTagInput[]) =>
-    new Promise<Tag[]>((resolve, reject) => {
-      timetableServiceClient.createTags({ tags }, (err, res) => {
-        if (err || !res) reject(err)
-        else resolve(res.tags as Tag[])
-      })
-    }),
-  getTags: (userId: string) =>
-    new Promise<Tag[]>((resolve, reject) => {
-      timetableServiceClient.getTags({ userId }, (err, res) => {
-        if (err || !res) reject(err)
-        else resolve(res.tags as Tag[])
-      })
-    }),
-  updateTags: (tags: Tag[]) =>
-    new Promise<Tag[]>((resolve, reject) => {
-      timetableServiceClient.updateTags({ tags }, (err, res) => {
-        if (err || !res) reject(err)
-        else resolve(res.tags as Tag[])
-      })
-    }),
-  deleteTags: (userId: string, ids: string[]) =>
-    new Promise<void>((resolve, reject) => {
-      timetableServiceClient.deleteTags({ userId, ids }, (err, res) => {
-        if (err || !res) reject(res)
-        else resolve()
-      })
-    }),
+  createRegisteredCourses: methodWrapper(
+    timetableServiceClient.createRegisteredCourses,
+    {
+      to: (prop: createRegisteredCoursesProps[]) => ({
+        courses: prop.map((c) =>
+          wrapNullableObject(c, [
+            'name',
+            'courseId',
+            'instructor',
+            'credit',
+            'methods',
+            'schedules',
+          ])
+        ),
+      }),
+      from: (res) => res.courses.map(unwrapNullableObject),
+    }
+  ),
+  getRegisteredCourses: methodWrapper(
+    timetableServiceClient.getRegisteredCourses,
+    {
+      from: (res) => res.courses.map(unwrapNullableObject),
+    }
+  ),
+  updateRegisteredCourses: methodWrapper(
+    timetableServiceClient.updateRegisteredCourses,
+    {
+      to: (prop: updateRegisteredCoursesProps[]) => ({
+        courses: prop.map((c) =>
+          wrapNullableObject(c, [
+            'name',
+            'courseId',
+            'instructor',
+            'credit',
+            'methods',
+            'schedules',
+          ])
+        ),
+      }),
+      from: (res) => res.courses.map(unwrapNullableObject),
+    }
+  ),
+  deleteRegisteredCourses: methodWrapper(
+    timetableServiceClient.deleteRegisteredCourses
+  ),
+  createTags: methodWrapper(timetableServiceClient.createTags, {
+    to: (tags: CreateTagInput[]) => ({ tags }),
+    from: (res) => res.tags,
+  }),
+  getTags: methodWrapper(timetableServiceClient.getTags, {
+    to: (userId: string) => ({ userId }),
+    from: (req) => req.tags,
+  }),
+  updateTags: methodWrapper(timetableServiceClient.updateTags, {
+    to: (tags: Tag[]) => ({ tags }),
+    from: (res) => res.tags,
+  }),
+  deleteTags: methodWrapper(timetableServiceClient.deleteTags),
 }

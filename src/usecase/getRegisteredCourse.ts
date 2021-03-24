@@ -11,10 +11,10 @@ export async function getRegisteredCourses(
   userId: string,
   year: number
 ): Promise<RegisteredCourse[]> {
-  const registeredCourses = await timetableService.getRegisteredCourses(
+  const registeredCourses = await timetableService.getRegisteredCourses({
     userId,
-    year
-  )
+    year,
+  })
   const baseCourses = await courseService.getCourses(
     registeredCourses.map((c) => c.courseId).filter((c): c is string => !!c)
   )

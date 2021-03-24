@@ -4,7 +4,7 @@ import {
   ICourse,
   ISearchCourseRequest,
 } from '../../../generated/services/course'
-import { createClient } from '../grpc'
+import { createClient, wrapGrpcRequestMethodFactory } from '../grpc'
 
 const courseServiceClient = createClient(
   ['services/course-service/protos/CourseService.proto'],
@@ -12,26 +12,18 @@ const courseServiceClient = createClient(
   'course:50051'
 )
 
+const methodWrapper = wrapGrpcRequestMethodFactory(courseServiceClient)
+
 export const courseService = {
-  getCoursesByCode: (conditions: { year: number; code: string }[]) =>
-    new Promise<All<ICourse>[]>((resolve, reject) => {
-      courseServiceClient.getCoursesByCode({ conditions }, (err, res) => {
-        if (err || !res) reject(err)
-        else resolve(res.courses as All<ICourse>[])
-      })
-    }),
-  getCourses: (ids: string[]) =>
-    new Promise<All<ICourse>[]>((resolve, reject) => {
-      courseServiceClient.getCourses({ ids }, (err, res) => {
-        if (err || !res) reject(err)
-        else resolve(res.courses as All<ICourse>[])
-      })
-    }),
-  searchCourses: (req: ISearchCourseRequest) =>
-    new Promise<All<ICourse>[]>((resolve, reject) => {
-      courseServiceClient.searchCourse(req, (err, res) => {
-        if (err || !res) reject(err)
-        else resolve(res.courses as All<ICourse>[])
-      })
-    }),
+  getCoursesByCode: methodWrapper(courseServiceClient.getCoursesByCode, {
+    to: (conditions: { year: number; code: string }[]) => ({ conditions }),
+    from: (res) => res.courses,
+  }),
+  getCourses: methodWrapper(courseServiceClient.getCourses, {
+    to: (ids: string[]) => ({ ids }),
+    from: (res) => res.courses,
+  }),
+  searchCourses: methodWrapper(courseServiceClient.searchCourse, {
+    from: (res) => res.courses,
+  }),
 }
