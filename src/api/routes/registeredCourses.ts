@@ -13,9 +13,10 @@ import {
 } from '../converter'
 import { Course, CourseMethod, CourseSchedule } from '../../type/course'
 import { nullToUndefined } from '../../type/utils'
-import { getRegisteredCourses } from '../../usecase/timetable/registeredCourse/getRegisteredCourse'
+import { getRegisteredCoursesByYear } from '../../usecase/timetable/registeredCourse/getRegisteredCoursesByYear'
 import { updateRegisteredCourse } from '../../usecase/timetable/registeredCourse/updateRegisteredCourse'
 import { deleteRegisteredCourse } from '../../usecase/timetable/registeredCourse/deleteRegisteredCourse'
+import { getRegisteredCourseUseCase } from '../../usecase/timetable/registeredCourse/getRegisteredCourse'
 
 type RegisteredCourseHandler = PartialServerImplementation<
   paths,
@@ -58,15 +59,15 @@ const handler: RegisteredCourseHandler = {
     get: async (req) => {
       return {
         code: 200,
-        body: (await getRegisteredCourses(req.userId, req.query.year)).map(
-          toResponseRegisteredCourse
-        ),
+        body: (
+          await getRegisteredCoursesByYear(req.userId, req.query.year)
+        ).map(toResponseRegisteredCourse),
       }
     },
   },
   '/registered-courses/{id}': {
     put: async (req) => {
-      const { methods, schedules, ...c } = req.body
+      const { methods, schedules, course, ...c } = req.body
       return {
         code: 200,
         body: toResponseRegisteredCourse(
@@ -74,6 +75,7 @@ const handler: RegisteredCourseHandler = {
             await updateRegisteredCourse(req.userId, [
               {
                 ...c,
+                courseId: course?.id,
                 methods: methods?.map(toInternalMethod),
                 schedules: schedules?.map(toInternalSchedule),
                 id: req.path.id,
@@ -83,13 +85,11 @@ const handler: RegisteredCourseHandler = {
         ),
       }
     },
-    get: (req) => {
+    get: async ({ path, userId }) => {
+      const course = await getRegisteredCourseUseCase(userId, path.id)
       return {
-        code: 500,
-        body: {
-          message: '',
-          errors: [],
-        },
+        code: 200,
+        body: toResponseRegisteredCourse(course),
       }
     },
     delete: async (req) => {

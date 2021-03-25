@@ -11,7 +11,7 @@ import {
 import { CourseSchedule, Day, Module } from '../../../type/course'
 import { RegisteredCourse } from '../../../type/regissteredCourse'
 import { All } from '../../../type/utils'
-import { getRegisteredCourses } from '../registeredCourse/getRegisteredCourse'
+import { getRegisteredCoursesByYear } from '../registeredCourse/getRegisteredCoursesByYear'
 
 type Result = {
   courses: RegisteredCourse[]
@@ -26,7 +26,7 @@ export async function getTimetableByDate(
   const nendo = date.month() < 4 ? date.year() - 1 : date.year()
 
   const [courses, events] = await Promise.all([
-    getRegisteredCourses(userId, nendo),
+    getRegisteredCoursesByYear(userId, nendo),
     schoolCalendarService.getEventsByDate(date),
   ])
 

@@ -94,7 +94,10 @@ export const timetableService = {
     }
   ),
   getRegisteredCourse: methodWrapper(
-    timetableServiceClient.getRegisteredCourse
+    timetableServiceClient.getRegisteredCourse,
+    {
+      from: (res) => unwrapNullableObject(res),
+    }
   ),
   updateRegisteredCourses: methodWrapper(
     timetableServiceClient.updateRegisteredCourses,
@@ -115,7 +118,10 @@ export const timetableService = {
     }
   ),
   deleteRegisteredCourses: methodWrapper(
-    timetableServiceClient.deleteRegisteredCourses
+    timetableServiceClient.deleteRegisteredCourses,
+    {
+      from: (res) => unwrapNullableObject(res),
+    }
   ),
   createTags: methodWrapper(timetableServiceClient.createTags, {
     to: (tags: CreateTagInput[]) => ({ tags }),
