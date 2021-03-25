@@ -11,7 +11,7 @@ export async function getRegisteredCourses(
   userId: string,
   year: number
 ): Promise<RegisteredCourse[]> {
-  const registeredCourses = await timetableService.getRegisteredCourses({
+  const registeredCourses = await timetableService.getRegisteredCoursesByYear({
     userId,
     year,
   })

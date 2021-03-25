@@ -87,11 +87,14 @@ export const timetableService = {
       from: (res) => res.courses.map(unwrapNullableObject),
     }
   ),
-  getRegisteredCourses: methodWrapper(
-    timetableServiceClient.getRegisteredCourses,
+  getRegisteredCoursesByYear: methodWrapper(
+    timetableServiceClient.getRegisteredCoursesByYear,
     {
       from: (res) => res.courses.map(unwrapNullableObject),
     }
+  ),
+  getRegisteredCourse: methodWrapper(
+    timetableServiceClient.getRegisteredCourse
   ),
   updateRegisteredCourses: methodWrapper(
     timetableServiceClient.updateRegisteredCourses,
