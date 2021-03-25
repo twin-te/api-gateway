@@ -61,6 +61,13 @@ services:
       - .donation.env
     depends_on:
       - postgres
+  information:
+    build: ../services/information-service
+    image: twinte-information-service-dev-image-for-apigateway
+    environment:
+      ADMIN_USER: test
+    depends_on:
+      - postgres
   postgres:
     image: postgres:13.1
     environment:

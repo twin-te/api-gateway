@@ -5,6 +5,7 @@ mkdir -p ./generated/services/course
 mkdir -p ./generated/services/timetable
 mkdir -p ./generated/services/schoolCalendar
 mkdir -p ./generated/services/donation
+mkdir -p ./generated/services/information
 
 
 ### course
@@ -84,4 +85,23 @@ yarn pbts \
 sed -i -e "s/\[ 'Promise' \]\./Promise/g" "generated/services/donation/index.d.ts"
 sed -i -e "s/\[ 'object' \]\.<string, any>/{ [k: string]: any }/g" "generated/services/donation/index.d.ts"
 sed -i -e "s/\[ 'Array' \]\./Array/g" "generated/services/donation/index.d.ts"
+###
+
+### information
+yarn pbjs \
+  --target static-module \
+  --no-encode \
+  --no-decode \
+  --path ../../ \
+  --out generated/services/information/index.js \
+  ./services/information-service/protos/InformationService.proto
+
+yarn pbts \
+  --out ./generated/services/information/index.d.ts \
+  ./generated/services/information/index.js
+
+### https://github.com/protobufjs/protobuf.js/issues/1222
+sed -i -e "s/\[ 'Promise' \]\./Promise/g" "generated/services/information/index.d.ts"
+sed -i -e "s/\[ 'object' \]\.<string, any>/{ [k: string]: any }/g" "generated/services/information/index.d.ts"
+sed -i -e "s/\[ 'Array' \]\./Array/g" "generated/services/information/index.d.ts"
 ###

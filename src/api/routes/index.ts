@@ -5,6 +5,7 @@ import schoolCalendar from './schoolCalendar'
 import timetable from './timetable'
 import donation from './donation'
 import user from './user'
+import information from './information'
 import { Express } from 'express'
 import { paths } from '../../../generated/openapi/schema'
 import { mapToExpress, ServerImplementation } from '../typeMapper'
@@ -18,6 +19,7 @@ export function applyRouter(app: Express) {
     ...timetable,
     ...donation,
     ...user,
+    ...information,
   }
   mapToExpress(app, impl)
 }

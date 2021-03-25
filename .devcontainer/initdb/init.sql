@@ -2,3 +2,4 @@ create database twinte_course_service;
 create database twinte_timetable_service;
 create database twinte_school_calendar_service;
 create database twinte_donation_service;
+create database twinte_information_service;

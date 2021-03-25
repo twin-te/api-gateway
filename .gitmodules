@@ -13,3 +13,6 @@
 [submodule "services/donation-service"]
 	path = services/donation-service
 	url = https://github.com/twin-te/donation-service.git
+[submodule "services/information-service"]
+	path = services/information-service
+	url = https://github.com/twin-te/information-service.git
