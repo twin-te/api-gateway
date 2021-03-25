@@ -10,7 +10,7 @@ import {
 
 type CourseHandler = PartialServerImplementation<
   paths,
-  '/courses/{year}/{code}' | '/courses/search' | '/courses/'
+  '/courses/{year}/{code}' | '/courses/search' | '/courses'
 >
 const handlers: CourseHandler = {
   '/courses/{year}/{code}': {
@@ -35,7 +35,7 @@ const handlers: CourseHandler = {
       }
     },
   },
-  '/courses/': {
+  '/courses': {
     get: async ({ query }) => {
       const courses = await getCoursesByCodeUseCase(
         query.codes.split(',').map((code) => ({ code, year: query.year })),
