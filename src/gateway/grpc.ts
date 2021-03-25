@@ -3,6 +3,12 @@ import * as protobuf from 'protobufjs'
 import * as protoLoader from '@grpc/proto-loader'
 import { ServiceClientConstructor } from '@grpc/grpc-js/build/src/make-client'
 import { All } from '../type/utils'
+import { Status } from '@grpc/grpc-js/build/src/constants'
+import {
+  AlreadyExistError,
+  InvalidArgumentError,
+  NotFoundError,
+} from '../error'
 
 export type DeepRequired<T> = {
   [K in keyof T]-?: NonNullable<DeepRequired<T[K]>>
@@ -99,7 +105,7 @@ function wrapGrpcRequestMethod<
       method.bind(binder)(
         transform?.to ? transform.to(req) : req,
         (err, res) => {
-          if (err || !res) reject(err)
+          if (err || !res) reject(err ? toInternalError(err) : null)
           else resolve(transform?.from ? transform.from(res) : res)
         }
       )
@@ -130,37 +136,6 @@ export function wrapGrpcRequestMethodFactory(
   ) => wrapGrpcRequestMethod(method, client, transform)
 }
 
-// type WrapConfig<Client extends GrpcClient<protobuf.rpc.Service>> = {
-//   [MethodName in FilteredKeys<Client, GrpcClientCallMethod>]: {
-//     transform?: {
-//       to?: <RequestType = RequestTypeFromMethod<Client[MethodName]>>(
-//         req: RequestType
-//       ) => RequestTypeFromMethod<Client[MethodName]>
-//       from?: <ReturnType>(
-//         res: All<ResponseTypeFromMethod<Client[MethodName]>>
-//       ) => ReturnType
-//     }
-//   }
-// }
-
-// export function wrapGrpcClientNext<
-//   Client extends GrpcClient<protobuf.rpc.Service>
-// >(client: Client, config: WrapConfig<Client>): WrappedGrpcClient<Client> {
-//   const wrapper = wrapGrpcRequestMethodFactory(client)
-//   const wrapped: { [key: string]: any } = {}
-//   // @ts-ignore
-//   // eslint-disable-next-line no-proto
-//   Object.keys(client.__proto__).forEach((k) => {
-//     const methodName = k as keyof WrapConfig<Client>
-//     const targetConfig = config[methodName]
-//     const fn = client[methodName]
-//     // @ts-ignore
-//     wrapped[k] = wrapper(fn, targetConfig?.transform)
-//   })
-//   // @ts-ignore
-//   return wrapped
-// }
-
 /**
  *  grpc-js純正のクライアントの全てのメソッドをpromisifyする
  * {@link wrapGrpcRequestMethod} で指定できるtransformは指定できない
@@ -183,4 +158,26 @@ export function wrapGrpcClient<Client extends GrpcClient<protobuf.rpc.Service>>(
   })
   // @ts-ignore
   return wrapped
+}
+
+/**
+ * gprcErrorを内部エラーへラップ
+ * @param e ラップするエラー
+ * @returns ラップされたエラー
+ */
+function toInternalError(e: grpc.ServiceError): Error {
+  switch (e.code) {
+    case Status.NOT_FOUND:
+      return new NotFoundError(
+        e.message,
+        e,
+        e.metadata.get('resources') as string[]
+      )
+    case Status.ALREADY_EXISTS:
+      return new AlreadyExistError(e.message, e)
+    case Status.INVALID_ARGUMENT:
+      return new InvalidArgumentError(e.message, e)
+    default:
+      return e
+  }
 }

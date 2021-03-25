@@ -1,4 +1,9 @@
 import { Express } from 'express'
+import {
+  AlreadyExistError,
+  InvalidArgumentError,
+  NotFoundError,
+} from '../error'
 import { api as logger } from '../logger'
 
 const HttpMethod = [
@@ -135,11 +140,45 @@ export function mapToExpress<T extends OpenApiDefinition>(
             // @ts-ignore
             res.json(result.body)
           } catch (e) {
-            next(e)
+            next(toHttpError(e))
           }
         }
       )
     })
   })
   logger.debug('-------------------------------')
+}
+
+/**
+ * HTTPで返すエラーに変換
+ * @param e 変換
+ * @returns expressで返すエラー
+ */
+function toHttpError(
+  e: Error
+): { message: string; errors: Error[]; status: Number } {
+  if (e instanceof NotFoundError)
+    return {
+      message: e.message,
+      errors: [e],
+      status: 404,
+    }
+  else if (e instanceof AlreadyExistError)
+    return {
+      message: e.message,
+      errors: [e],
+      status: 400,
+    }
+  else if (e instanceof InvalidArgumentError)
+    return {
+      message: e.message,
+      errors: [e],
+      status: 400,
+    }
+  else
+    return {
+      message: e.message,
+      errors: [e],
+      status: 500,
+    }
 }
