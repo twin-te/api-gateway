@@ -7,6 +7,7 @@ import { applyRouter } from './routes'
 import swaggerUI from 'swagger-ui-express'
 import YAML from 'yamljs'
 import { checkSession } from '../usecase/session/checkSession'
+import cors from 'cors'
 
 const apiSpecPath = path.resolve(__dirname, '../../openapi-spec/spec.yml')
 
@@ -18,6 +19,17 @@ export function startApiServer() {
     app.use(express.json())
     app.use(express.text())
     app.use(express.urlencoded({ extended: true }))
+
+    app.use(
+      cors({
+        origin: [
+          /https:\/\/(.+\.)*twinte\.net$/,
+          'https://twins.tsukuba.ac.jp',
+          /localhost(:\d{1,5})?$/,
+        ],
+        credentials: true,
+      })
+    )
 
     app.use(
       '/api-docs',
