@@ -154,7 +154,7 @@ export function mapToExpress<T extends OpenApiDefinition>(
  * @param e 変換
  * @returns expressで返すエラー
  */
-function toHttpError(
+export function toHttpError(
   e: Error
 ): { message: string; errors: Error[]; status: Number } {
   if (e instanceof NotFoundError)

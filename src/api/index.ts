@@ -8,8 +8,12 @@ import swaggerUI from 'swagger-ui-express'
 import YAML from 'yamljs'
 import cors from 'cors'
 import { getSession } from '../usecase/session/getSession'
+import { toHttpError } from './typeMapper'
+import { NotFoundError } from '../error'
 
 const apiSpecPath = path.resolve(__dirname, '../../openapi-spec/spec.yml')
+
+const sessionCookieName = process.env.COOKIE_NAME ?? 'twinte_session'
 
 export function startApiServer() {
   return new Promise<void>((resolve, reject) => {
@@ -44,29 +48,6 @@ export function startApiServer() {
       next()
     })
 
-    /**
-     * ログインを試すためのエンドポイント
-     */
-    app.get('/login', (req, res) => {
-      res.cookie('connect.sid', 'test value', {
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-      })
-      res.send(
-        `<p>Logged in as test user</p>
-        <p><a href="./api-docs/">api-docs</a></p>
-        <p><a href="./logout">logout</a></p>
-        `
-      )
-    })
-    app.get('/logout', (req, res) => {
-      res.clearCookie('connect.sid')
-      res.send(`<p>Logged out</p>
-      <p><a href="./api-docs/">api-docs</a></p>
-      <p><a href="./login">login</a></p>
-      `)
-    })
-
     app.use(
       middleware({
         apiSpec: apiSpecPath,
@@ -76,11 +57,18 @@ export function startApiServer() {
     )
 
     app.use(async (req, res, next) => {
-      req.userId = await getSession(req.cookies['connect.sid'])
-      if (!req.userId) {
-        res.status(401)
-        res.send({ message: 'Unauthorized', errors: [] })
-      } else next()
+      try {
+        req.userId = await getSession(req.cookies[sessionCookieName])
+        if (!req.userId) {
+          res.status(401)
+          res.send({ message: 'Unauthorized', errors: [] })
+        } else next()
+      } catch (e) {
+        if (e instanceof NotFoundError) {
+          res.status(401)
+          res.send({ message: 'Unauthorized', errors: [] })
+        } else next(toHttpError(e))
+      }
     })
 
     applyRouter(app)
