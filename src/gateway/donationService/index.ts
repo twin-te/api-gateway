@@ -4,7 +4,7 @@ import { createClient, wrapGrpcClient } from '../grpc'
 const donationServiceClient = createClient(
   ['services/donation-service/protos/DonationService.proto'],
   DonationService,
-  'donation:50051'
+  process.env.DONATION_SERVICE_URL ?? 'donation:50051'
 )
 
 export const donationService = wrapGrpcClient(donationServiceClient)

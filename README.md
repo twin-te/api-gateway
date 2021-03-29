@@ -31,6 +31,19 @@ api-gateway
 |usecase|ビジネスロジック層|
 |gateway|データアクセス層|
 
+# 利用方法
+[ビルド済みDockerImage](https://github.com/orgs/twin-te/packages?repo_name=api-gateway)が利用できます。
+
+| 環境変数名  | 説明                             | default               |
+|------------|----------------------------------|-----------------------|
+| COURSE_SERVICE_URL | course-serviceの接続先 | course:50051|
+| TIMETABLE_SERVICE_URL | timetable-serviceの接続先 | timetable:50051|
+| DONATION_SERVICE_URL | donation-serviceの接続先 | donation:50051|
+| INFORMATION_SERVICE_URL | information-serviceの接続先 | information:50051|
+| SCHOOL_CALENDAR_SERVICE_URL | school-calendar-serviceの接続先 | school-calendar:50051|
+| SESSION_SERVICE_URL | session-serviceの接続先 | session:50051|
+| LOG_LEVEL   | ログレベル fatal / error / warn / info / debug / trace / off | info              |
+
 # 開発方法
 Docker + VSCodeを推奨します。
 以下その方法を紹介します。

@@ -63,7 +63,7 @@ const timetableServiceClient = createClient(
     (p) => `services/timetable-service/protos/${p}`
   ),
   TimetableService,
-  'timetable:50051'
+  process.env.TIMETABLE_SERVICE_URL ?? 'timetable:50051'
 )
 
 const methodWrapper = wrapGrpcRequestMethodFactory(timetableServiceClient)

@@ -4,7 +4,7 @@ import { InformationService } from '../../../generated/services/information'
 const informationServiceClient = createClient(
   ['services/information-service/protos/InformationService.proto'],
   InformationService,
-  'information:50051'
+  process.env.INFORMATION_SERVICE_URL ?? 'information:50051'
 )
 
 const methodWrapper = wrapGrpcRequestMethodFactory(informationServiceClient)

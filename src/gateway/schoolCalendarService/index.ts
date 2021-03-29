@@ -17,7 +17,7 @@ export type SchoolCalendarEvent = {
 const schoolCalendarServiceClient = createClient(
   ['services/school-calendar-service/protos/SchoolCalendarService.proto'],
   SchoolCalendarService,
-  'school-calendar:50051'
+  process.env.SCHOOL_CALENDAR_SERVICE_URL ?? 'school-calendar:50051'
 )
 
 const methodWrapper = wrapGrpcRequestMethodFactory(schoolCalendarServiceClient)

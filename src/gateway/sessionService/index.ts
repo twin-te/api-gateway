@@ -4,7 +4,7 @@ import { SessionService } from '../../../generated/services/session'
 const sessionServiceClient = createClient(
   ['services/session-service/protos/SessionService.proto'],
   SessionService,
-  'session:50051'
+  process.env.SESSION_SERVICE_URL ?? 'session:50051'
 )
 
 const methodWrapper = wrapGrpcRequestMethodFactory(sessionServiceClient)

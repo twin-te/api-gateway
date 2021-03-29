@@ -9,7 +9,7 @@ import { createClient, wrapGrpcRequestMethodFactory } from '../grpc'
 const courseServiceClient = createClient(
   ['services/course-service/protos/CourseService.proto'],
   CourseService,
-  'course:50051'
+  process.env.COURSE_SERVICE_URL ?? 'course:50051'
 )
 
 const methodWrapper = wrapGrpcRequestMethodFactory(courseServiceClient)
