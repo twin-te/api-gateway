@@ -16,3 +16,6 @@
 [submodule "services/information-service"]
 	path = services/information-service
 	url = https://github.com/twin-te/information-service.git
+[submodule "services/session-service"]
+	path = services/session-service
+	url = https://github.com/twin-te/session-service.git

@@ -1,7 +1,14 @@
-// 仮実装
+import { createClient, wrapGrpcRequestMethodFactory } from '../grpc'
+import { SessionService } from '../../../generated/services/session'
+
+const sessionServiceClient = createClient(
+  ['services/session-service/protos/SessionService.proto'],
+  SessionService,
+  'session:50051'
+)
+
+const methodWrapper = wrapGrpcRequestMethodFactory(sessionServiceClient)
 
 export const sessionService = {
-  async checkSession(sessionId: string): Promise<string | null> {
-    return '59c890d3-eebd-4477-b64a-9609e0946a72'
-  },
+  getSession: methodWrapper(sessionServiceClient.getSession),
 }

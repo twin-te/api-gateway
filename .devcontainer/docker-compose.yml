@@ -68,6 +68,26 @@ services:
       ADMIN_USER: test
     depends_on:
       - postgres
+  session:
+    build: ../services/session-service
+    image: twinte-session-service-dev-image-for-apigateway
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/twinte_session_service?schema=public
+      SESSION_LIFETIME_HOURS: 8760
+    depends_on:
+      - postgres
+  user:
+    image: ghcr.io/twin-te/user-service:0.1.0
+    depends_on:
+      - postgres
+  callback:
+    image: ghcr.io/twin-te/callback-handler:0.0.2
+    env_file:
+      - .callback.env
+    ports:
+      - "0.0.0.0:3001:3001" 
+    depends_on:
+      - postgres
   postgres:
     image: postgres:13.1
     environment:

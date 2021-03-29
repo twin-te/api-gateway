@@ -6,8 +6,8 @@ import { api as logger } from '../logger'
 import { applyRouter } from './routes'
 import swaggerUI from 'swagger-ui-express'
 import YAML from 'yamljs'
-import { checkSession } from '../usecase/session/checkSession'
 import cors from 'cors'
+import { getSession } from '../usecase/session/getSession'
 
 const apiSpecPath = path.resolve(__dirname, '../../openapi-spec/spec.yml')
 
@@ -76,7 +76,7 @@ export function startApiServer() {
     )
 
     app.use(async (req, res, next) => {
-      req.userId = await checkSession(req.cookies['connect.sid'])
+      req.userId = await getSession(req.cookies['connect.sid'])
       if (!req.userId) {
         res.status(401)
         res.send({ message: 'Unauthorized', errors: [] })
