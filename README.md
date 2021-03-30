@@ -42,6 +42,7 @@ api-gateway
 | INFORMATION_SERVICE_URL | information-serviceの接続先 | information:50051|
 | SCHOOL_CALENDAR_SERVICE_URL | school-calendar-serviceの接続先 | school-calendar:50051|
 | SESSION_SERVICE_URL | session-serviceの接続先 | session:50051|
+| COOKIE_NAME | session-serviceに渡すidが含まれるCOOKIE名 | twinte_session |
 | LOG_LEVEL   | ログレベル fatal / error / warn / info / debug / trace / off | info              |
 
 # 開発方法
