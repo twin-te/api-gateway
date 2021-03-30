@@ -14,6 +14,7 @@ import { NotFoundError } from '../error'
 const apiSpecPath = path.resolve(__dirname, '../../openapi-spec/spec.yml')
 
 const sessionCookieName = process.env.COOKIE_NAME ?? 'twinte_session'
+const isDev = process.env.NODE_ENV === 'development'
 
 export function startApiServer() {
   return new Promise<void>((resolve, reject) => {
@@ -26,11 +27,13 @@ export function startApiServer() {
 
     app.use(
       cors({
-        origin: [
-          /https:\/\/(.+\.)*twinte\.net$/,
-          'https://twins.tsukuba.ac.jp',
-          /localhost(:\d{1,5})?$/,
-        ],
+        origin: isDev
+          ? [
+              /https:\/\/(.+\.)*twinte\.net$/,
+              'https://twins.tsukuba.ac.jp',
+              /localhost(:\d{1,5})?$/, // devの場合はlocalhost許可
+            ]
+          : [/https:\/\/(.+\.)*twinte\.net$/, 'https://twins.tsukuba.ac.jp'],
         credentials: true,
       })
     )
@@ -86,7 +89,7 @@ export function startApiServer() {
       // format error
       res.status(err.status || 500).json({
         message: err.message,
-        errors: err.errors,
+        errors: isDev ? err.errors : [], // prodのときは詳細エラーは出さない
       })
     })
 
