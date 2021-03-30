@@ -81,7 +81,7 @@ services:
     depends_on:
       - postgres
   callback:
-    image: ghcr.io/twin-te/callback-handler:0.0.2
+    image: ghcr.io/twin-te/callback-handler:0.1.0
     env_file:
       - .callback.env
     ports:

@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "cross-env LOG_LEVEL=trace ts-node --files src/index.ts",
+    "dev": "cross-env LOG_LEVEL=trace NODE_ENV=development ts-node --files src/index.ts",
     "proto": "./proto-gen.sh",
     "openapi": "openapi-typescript ./openapi-spec/spec.yml --output ./generated/openapi/schema.ts",
     "build": "rm -rf ./dist && tsc && rm -rf ./dist/generated && mv ./dist/src/* ./dist/"
