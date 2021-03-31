@@ -10,7 +10,7 @@ const handler: CourseHandler = {
         code: 200,
         body: {
           id: userId,
-          name: 'test user',
+          name: '',
         },
       }
     },

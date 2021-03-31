@@ -55,6 +55,8 @@ const handlers: CourseHandler = {
         searchMode:
           body.searchMode === 'Contain' ? SearchMode.Contain : SearchMode.Cover,
         timetable: body.timetable ? convertModules(body.timetable) : undefined,
+        limit: body.limit ?? 20,
+        offset: body.offset ?? 0,
       })
       return {
         code: 200,

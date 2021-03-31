@@ -15,6 +15,8 @@ type Input = {
       [day in keyof typeof Day]?: boolean[]
     }
   }
+  limit: number
+  offset: number
 }
 
 export function searchCourseUseCase(input: Input) {
