@@ -23,7 +23,7 @@ export async function getTimetableByDate(
   userId: string,
   date: Dayjs
 ): Promise<Result> {
-  const nendo = date.month() < 4 ? date.year() - 1 : date.year()
+  const nendo = date.month() < 3 ? date.year() - 1 : date.year()
 
   const [courses, events] = await Promise.all([
     getRegisteredCoursesByYear(userId, nendo),
