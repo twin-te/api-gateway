@@ -60,6 +60,15 @@ export function startApiServer() {
     )
 
     app.use(async (req, res, next) => {
+      // TODO あとでいい方法を考える
+      // 以下のurlは認証スキップ
+      if (
+        req.originalUrl.startsWith('/donation/aggregate/') ||
+        req.originalUrl.startsWith('/donation/session/onetime') ||
+        req.originalUrl.startsWith('/information')
+      )
+        next()
+
       try {
         req.userId = await getSession(req.cookies[sessionCookieName])
         if (!req.userId) {
