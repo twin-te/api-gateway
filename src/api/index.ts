@@ -66,8 +66,10 @@ export function startApiServer() {
         req.originalUrl.startsWith('/donation/aggregate/') ||
         req.originalUrl.startsWith('/donation/session/onetime') ||
         req.originalUrl.startsWith('/information')
-      )
+      ) {
         next()
+        return
+      }
 
       try {
         req.userId = await getSession(req.cookies[sessionCookieName])
