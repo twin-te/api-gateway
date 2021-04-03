@@ -29,9 +29,9 @@ const MODULE = [
   'FallA',
   'FallB',
   'FallC',
-  'Annual',
   'SummerVacation',
   'SpringVacation',
+  'Annual',
   'Unknown',
 ] as const
 
