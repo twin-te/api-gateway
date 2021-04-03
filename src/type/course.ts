@@ -48,6 +48,8 @@ export type Course = {
   credit: number
   overview: string
   remarks: string
+  isAnnual: boolean
+  hasParseError: boolean
   recommendedGrades: number[]
   methods: CourseMethod[]
   schedules: CourseSchedule[]
