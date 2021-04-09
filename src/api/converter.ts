@@ -48,14 +48,15 @@ export function toResponseSchedule(
   }
 }
 
-export function toResponseDay(d: Day): components['schemas']['Day'] {
+export function toResponseDay(d: Day): components['schemas']['CourseDay'] {
   return DAYS[d]
 }
 
 export function toResponseModule(
   d: Module
 ): components['schemas']['CourseModule'] {
-  return MODULE[d]
+  // TODO Annualの扱い考える
+  return MODULE[d] as components['schemas']['CourseModule']
 }
 
 export function toResponseMethod(
@@ -111,7 +112,7 @@ function toInternalModule(s: components['schemas']['CourseModule']): Module {
   return MODULE.indexOf(s)
 }
 
-function toInternalDay(s: components['schemas']['Day']): Day {
+function toInternalDay(s: components['schemas']['CourseDay']): Day {
   return DAYS.indexOf(s)
 }
 

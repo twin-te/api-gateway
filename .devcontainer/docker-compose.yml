@@ -77,11 +77,11 @@ services:
     depends_on:
       - postgres
   user:
-    image: ghcr.io/twin-te/user-service:0.1.1
+    image: ghcr.io/twin-te/user-service:0.1.2
     depends_on:
       - postgres
   callback:
-    image: ghcr.io/twin-te/callback-handler:0.1.0
+    image: ghcr.io/twin-te/callback-handler:0.1.6
     env_file:
       - .callback.env
     ports:
