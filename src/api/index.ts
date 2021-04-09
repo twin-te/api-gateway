@@ -28,11 +28,7 @@ export function startApiServer() {
     app.use(
       cors({
         origin: isDev
-          ? [
-              /https:\/\/(.+\.)*twinte\.net$/,
-              'https://twins.tsukuba.ac.jp',
-              /localhost(:\d{1,5})?$/, // devの場合はlocalhost許可
-            ]
+          ? [/.*/] // devだったらどこでも許可
           : [/https:\/\/(.+\.)*twinte\.net$/, 'https://twins.tsukuba.ac.jp'],
         credentials: true,
       })
