@@ -11,7 +11,7 @@ const methodWrapper = wrapGrpcRequestMethodFactory(informationServiceClient)
 
 export const informationService = {
   getInformation: methodWrapper(informationServiceClient.getInformation, {
-    to: (limit: number) => ({ limit }),
     from: (res) => res.Informations,
   }),
+  setReadFlag: methodWrapper(informationServiceClient.setReadFlag),
 }
