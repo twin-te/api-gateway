@@ -32,6 +32,7 @@ const handler: TimetableHandler = {
       return {
         code: 200,
         body: {
+          date: path.date,
           courses: res.courses.map(toResponseRegisteredCourse),
           module: res.module ? toResponseModuleTerm(res.module) : undefined,
           events: res.events.map(toResponseEvent),
