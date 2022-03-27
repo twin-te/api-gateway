@@ -8,7 +8,7 @@ import { unwrapNullableObject, wrapNullableObject } from './nullable'
 import { All } from '../../type/utils'
 import { createClient, wrapGrpcRequestMethodFactory } from '../grpc'
 
-type Tag = { id: string; userId: string; name: string }
+type Tag = { id: string; userId: string; name?: string; position?: number }
 
 type CreateTagInput = { userId: string; name: string }
 
@@ -132,7 +132,12 @@ export const timetableService = {
     from: (req) => req.tags,
   }),
   updateTags: methodWrapper(timetableServiceClient.updateTags, {
-    to: (tags: Tag[]) => ({ tags }),
+    to: (tags: Tag[]) => ({
+      tags: tags.map(({ position, ...t }) => ({
+        ...t,
+        position: position ?? -1, // positionが指定されていなければ-1にする。変更なしとみなされる。
+      })),
+    }),
     from: (res) => res.tags,
   }),
   deleteTags: methodWrapper(timetableServiceClient.deleteTags),
