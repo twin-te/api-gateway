@@ -18,6 +18,15 @@ const handler: RegisteredCourseHandler = {
         body: (await createTagsUseCase([{ userId, name: body.name }]))[0],
       }
     },
+    patch: async ({ userId, body }) => {
+      const tags = body.map((t) => ({ ...t, userId }))
+      return {
+        code: 200,
+        body: await (
+          await updateTagsUseCase(tags)
+        ).map(({ name, userId, ...t }) => ({ ...t })),
+      }
+    },
     get: async ({ userId }) => {
       return {
         code: 200,
@@ -30,7 +39,9 @@ const handler: RegisteredCourseHandler = {
       return {
         code: 200,
         body: (
-          await updateTagsUseCase([{ id: path.id, userId, name: body.name }])
+          await updateTagsUseCase([
+            { id: path.id, userId, name: body.name, position: -1 },
+          ])
         )[0],
       }
     },
