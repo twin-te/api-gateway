@@ -9,6 +9,7 @@ export enum SearchMode {
 type Input = {
   year: number
   keywords: string[]
+  codes: string[]
   searchMode: SearchMode
   timetable?: {
     [module in keyof typeof Module]?: {

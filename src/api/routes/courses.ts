@@ -52,6 +52,7 @@ const handlers: CourseHandler = {
       const res = await searchCourseUseCase({
         year: body.year,
         keywords: body.keywords,
+        codes: body.codes ?? [],
         searchMode:
           body.searchMode === 'Contain' ? SearchMode.Contain : SearchMode.Cover,
         timetable: body.timetable ? convertModules(body.timetable) : undefined,
@@ -89,11 +90,10 @@ function convertModules(
     }
   } = {}
   Object.keys(modules).forEach((k) => {
-    res[
-      k as keyof components['schemas']['SearchCourseTimetableQuery']
-    ] = convertDays(
-      modules[k as keyof components['schemas']['SearchCourseTimetableQuery']]!
-    )
+    res[k as keyof components['schemas']['SearchCourseTimetableQuery']] =
+      convertDays(
+        modules[k as keyof components['schemas']['SearchCourseTimetableQuery']]!
+      )
   })
   return res
 }
@@ -105,11 +105,12 @@ function convertDays(
     [day in keyof components['schemas']['SearchCourseTimetableQueryDays']]: boolean[]
   } = {}
   Object.keys(days).forEach((k) => {
-    res[
-      k as keyof components['schemas']['SearchCourseTimetableQueryDays']
-    ] = convertPeriods(
-      days[k as keyof components['schemas']['SearchCourseTimetableQueryDays']]!
-    )
+    res[k as keyof components['schemas']['SearchCourseTimetableQueryDays']] =
+      convertPeriods(
+        days[
+          k as keyof components['schemas']['SearchCourseTimetableQueryDays']
+        ]!
+      )
   })
   return res
 }
