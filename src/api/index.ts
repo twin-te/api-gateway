@@ -60,7 +60,6 @@ export function startApiServer() {
       // 以下のurlは認証スキップ
       if (
         req.originalUrl.startsWith('/donation/aggregate/') ||
-        req.originalUrl.startsWith('/donation/session/onetime') ||
         req.originalUrl.startsWith('/information')
       ) {
         next()
