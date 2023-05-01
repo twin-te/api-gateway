@@ -4,20 +4,61 @@ services:
     build: .
     image: apigateway
     ports:
-      - 3000:3000
+      - '0.0.0.0:3000:3000'
   course:
-    build: ./services/course-service
+    build: services/course-service
     image: twinte-cource-service-dev-image-for-apigateway
     depends_on:
       - postgres
   timetable:
-    build: ./services/timetable-service
+    build: services/timetable-service
     image: twinte-timetable-service-dev-image-for-apigateway
     depends_on:
       - postgres
   school-calendar:
-    build: ./services/school-calendar-service
+    build: services/school-calendar-service
     image: twinte-school-calendar-service-dev-image-for-apigateway
+    depends_on:
+      - postgres
+  donation:
+    build: services/donation-service
+    image: twinte-donation-service-dev-image-for-apigateway
+    env_file:
+      - ./.devcontainer/.donation.env
+    depends_on:
+      - postgres
+  information:
+    build: services/information-service
+    image: twinte-information-service-dev-image-for-apigateway
+    environment:
+      ADMIN_USER: test
+    depends_on:
+      - postgres
+  session:
+    build: services/session-service
+    image: twinte-session-service-dev-image-for-apigateway
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/twinte_session_service?schema=public
+      SESSION_LIFETIME_HOURS: 8760
+    depends_on:
+      - postgres
+  user:
+    build: services/user-service
+    image: twinte-user-service-dev-image-for-apigateway # old image: ghcr.io/twin-te/user-service:0.1.2
+    environment:
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_USERNAME: postgres
+      PG_PASSWORD: postgres
+      PG_DATABASE: twinte_user_service
+    depends_on:
+      - postgres
+  callback:
+    image: ghcr.io/twin-te/callback-handler:0.1.6
+    env_file:
+      - ./.devcontainer/.callback.env
+    ports:
+      - '0.0.0.0:3001:3001'
     depends_on:
       - postgres
   postgres:

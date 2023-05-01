@@ -11,4 +11,7 @@ const methodWrapper = wrapGrpcRequestMethodFactory(sessionServiceClient)
 
 export const sessionService = {
   getSession: methodWrapper(sessionServiceClient.getSession),
+  deleteSessionByUserId: methodWrapper(
+    sessionServiceClient.deleteSessionByUserId
+  ),
 }

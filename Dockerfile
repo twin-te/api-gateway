@@ -28,6 +28,7 @@ COPY --from=build-env /usr/src/app/services/school-calendar-service/protos/ ./se
 COPY --from=build-env /usr/src/app/services/donation-service/protos/ ./services/donation-service/protos/
 COPY --from=build-env /usr/src/app/services/information-service/protos/ ./services/information-service/protos/
 COPY --from=build-env /usr/src/app/services/session-service/protos/ ./services/session-service/protos/
+COPY --from=build-env /usr/src/app/services/user-service/server/pb/ ./services/user-service/server/pb/
 
 COPY --from=build-env /usr/src/app/openapi-spec/spec.yml ./openapi-spec/
 COPY --from=build-env /usr/src/app/dist ./dist
